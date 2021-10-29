@@ -19,3 +19,9 @@ export function randomIntBetween(
   let min = n1 === max ? n2 : n1;
   return Math.floor(random() * (max - min + 1) + min);
 }
+
+export function randomFromArray<T>(arr: T[], seed?: number | string) {
+  if (arr.length === 1) return arr[0];
+  let index = Math.round(randomBetween(0, arr.length - 1, seed));
+  return arr[index];
+}

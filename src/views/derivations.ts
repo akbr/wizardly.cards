@@ -1,12 +1,13 @@
 import { ViewProps } from "../wizard/types";
 import { rotateArray } from "../lib/array";
 
+export const avatars = ["🐵", "🐸", "🦊", "🐷", "🐭", "🐼"];
+
 export function derivePlayers({ state, room }: ViewProps) {
   if (!room) return [];
 
   let activePlayer = "activePlayer" in state ? state.activePlayer : -1;
 
-  const avatars = ["🐵", "🐸", "🦊", "🐷", "🐭", "🐼"];
   return rotateArray(
     room.seats.map((_, idx) => ({
       avatar: avatars[idx],

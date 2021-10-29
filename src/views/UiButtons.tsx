@@ -5,6 +5,7 @@ import { a, topMargins } from "./commonCss";
 import { EmojiButton, Button } from "./common";
 
 import { DialogOf } from "./Dialog";
+import { ScoreTable } from "./ScoreTable";
 
 let flex = css`
   display: flex;
@@ -43,9 +44,16 @@ const Options = ({ exit }: { exit: () => void }) => {
 type TableButtonProps = {
   exit: () => void;
   scores?: number[][];
+  avatars: string[];
+  playerIndex: number;
 };
 
-export const UiButtons = ({ scores, exit }: TableButtonProps) => {
+export const UiButtons = ({
+  scores,
+  avatars,
+  playerIndex,
+  exit,
+}: TableButtonProps) => {
   const [optionsVisible, setOptions] = useState(false);
   const [scoresVisible, setScores] = useState(false);
 
@@ -66,7 +74,15 @@ export const UiButtons = ({ scores, exit }: TableButtonProps) => {
       </DialogOf>
       {scores && (
         <DialogOf close={closeScores} visible={scoresVisible}>
-          <div>{scores}</div>
+          {scoresVisible && (
+            <div style={{ display: "grid", placeContent: "center" }}>
+              <ScoreTable
+                scores={scores}
+                avatars={avatars}
+                playerIndex={playerIndex}
+              />
+            </div>
+          )}
         </DialogOf>
       )}
     </Fragment>

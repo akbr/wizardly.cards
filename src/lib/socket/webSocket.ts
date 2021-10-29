@@ -5,7 +5,6 @@ export function createWebSocket<I, O>(url: string) {
 
   let socket: Socket<I, O> = {
     send: (action) => {
-      console.log(JSON.stringify(action));
       websocket.send(JSON.stringify(action));
     },
     close: () => websocket.close(),

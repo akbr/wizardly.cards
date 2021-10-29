@@ -10,7 +10,7 @@ import type {
   // Actions
   SelectTrumpAction,
   BidAction,
-  PlayAction
+  PlayAction,
 } from "./types";
 
 import { rotateIndex } from "../lib/array";
@@ -18,12 +18,12 @@ import {
   getDealtCards,
   getWinningIndex,
   getPlayableCards,
-  isValidBid
+  isValidBid,
 } from "./logic";
 
 export const err = (data: string): Msgs => ({
   type: "err",
-  data
+  data,
 });
 
 export const toNextTurn = (s: Seed | Play): SelectTrump | Bid => {
@@ -43,7 +43,7 @@ export const toNextTurn = (s: Seed | Play): SelectTrump | Bid => {
     trumpSuit,
     trick: {
       cards: [],
-      leader: rotateIndex(s.numPlayers, dealer)
+      leader: rotateIndex(s.numPlayers, dealer),
     },
     bids: Array.from({ length: s.numPlayers }, () => false) as (
       | number
@@ -58,7 +58,7 @@ export const toNextTurn = (s: Seed | Play): SelectTrump | Bid => {
     // Carry over
     options: s.options,
     numPlayers: s.numPlayers,
-    prevTrick: "prevTrick" in s ? s.prevTrick : undefined
+    prevTrick: "prevTrick" in s ? s.prevTrick : undefined,
   };
 };
 
@@ -73,7 +73,7 @@ export const onSelectTrump = (
         ...s,
         type: "bid",
         trumpSuit: suit,
-        activePlayer: rotateIndex(s.numPlayers, s.dealer)
+        activePlayer: rotateIndex(s.numPlayers, s.dealer),
       }
     : err("Invalid suit.");
 };
@@ -91,7 +91,7 @@ export const onBid = (
       canadian: s.options.canadian,
       numPlayers: s.numPlayers,
       bids: s.bids,
-      turn: s.turn
+      turn: s.turn,
     })
   ) {
     return err("Invalid bid.");
@@ -106,7 +106,7 @@ export const onBid = (
     bids,
     activePlayer: bidsRemain
       ? rotateIndex(s.numPlayers, s.activePlayer)
-      : rotateIndex(s.numPlayers, s.dealer)
+      : rotateIndex(s.numPlayers, s.dealer),
   };
 };
 
@@ -126,7 +126,7 @@ export const onPlay = (
 
   const nextTrick = {
     ...s.trick,
-    cards: nextTrickCards
+    cards: nextTrickCards,
   };
 
   const nextHands = s.hands.map((hand, i) => {
@@ -140,7 +140,7 @@ export const onPlay = (
       ...s,
       activePlayer: rotateIndex(s.numPlayers, s.activePlayer),
       hands: nextHands,
-      trick: nextTrick
+      trick: nextTrick,
     };
   }
 
@@ -161,14 +161,14 @@ export const onPlay = (
 
   const prevTrick = {
     ...nextTrick,
-    winner
+    winner,
   };
 
   return turnIsOver
     ? toNextTurn({
         ...s,
         prevTrick,
-        actuals
+        actuals,
       })
     : {
         ...s,
@@ -177,8 +177,8 @@ export const onPlay = (
         hands: nextHands,
         trick: {
           cards: [],
-          leader: winner
+          leader: winner,
         },
-        prevTrick
+        prevTrick,
       };
 };

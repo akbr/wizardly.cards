@@ -1,4 +1,3 @@
-import "../styles.css";
 import { setup } from "goober";
 import { h } from "preact";
 import { render } from "./lib/premix";
@@ -9,15 +8,15 @@ import { initRemote, initLocal } from "./lib/appInterfaces";
 import { createActions } from "./wizard/actions";
 import { getUiStates } from "./wizard/getUiStates";
 
-export function init(remote = false) {
+export function init() {
   setup(h);
 
-  const url = location.origin.replace(/^http/, "ws");
+  const isDev = location.port === "1234";
+  const appInterfaces = isDev
+    ? initLocal(engine, getUiStates)
+    : initRemote(location.origin.replace(/^http/, "ws"), getUiStates);
 
-  const appInterfaces = remote
-    ? initRemote(url, getUiStates)
-    : initLocal(engine, getUiStates);
-  const { store, meter, manager } = appInterfaces;
+  const { store, meter } = appInterfaces;
   const actions = createActions(appInterfaces);
 
   const $appRoot = document.getElementById("app")!;

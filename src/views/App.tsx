@@ -11,6 +11,8 @@ import { Players } from "./Players";
 import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
 
+import { avatars } from "./derivations";
+
 export function App(props: ViewProps) {
   let { state, room, actions } = props;
 
@@ -68,7 +70,12 @@ export function App(props: ViewProps) {
         />
       )}
       <Cards {...props} />
-      <UiButtons scores={state.scores} exit={actions.exit} />
+      <UiButtons
+        scores={state.scores}
+        avatars={room.seats.map((_, idx) => avatars[idx])}
+        playerIndex={room.seatIndex}
+        exit={actions.exit}
+      />
     </DragSurface>
   );
 }
