@@ -1,0 +1,40 @@
+:root {
+  --app-max-width: 700px;
+  --app-min-width: 300px;
+  --app-min-height: 500px;
+  --backdrop-background: #2a1b0e;
+  --table-background: radial-gradient(
+    circle,
+    rgba(0, 122, 11, 1) 40%,
+    rgba(0, 100, 10, 1) 100%
+  );
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: Arial;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  background-color: var(--backdrop-background);
+  color: white;
+}
+
+#app {
+  position: relative;
+  margin: auto;
+  height: 100%;
+  max-width: var(--app-max-width);
+  min-width: var(--app-min-width);
+  min-height: var(--app-min-height);
+  background: var(--table-background);
+  overflow: hidden;
+  box-shadow: 23px 3px 15px rgba(0, 0, 0, 0.1),
+    -23px -3px 15px rgba(0, 0, 0, 0.1);
+}
