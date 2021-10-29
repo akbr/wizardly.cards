@@ -32,7 +32,7 @@ export const PlayInfo = ({ turn, trumpCard, trumpSuit }: PlayInfoProps) => {
       <div>Turn: {turn}</div>
       {trumpSuit && (
         <div>
-          Trump:{" "}
+          <div>Trump:</div>
           <MiniCard>
             <Icon style={{ fill: colors[trumpSuit] }}>
               <use href={`#card-${trumpSuit}`}></use>
@@ -45,7 +45,7 @@ export const PlayInfo = ({ turn, trumpCard, trumpSuit }: PlayInfoProps) => {
                       ? colors.w
                       : value === "j"
                       ? colors.j
-                      : colors[trumpSuit]
+                      : colors[trumpSuit],
                 }}
               >
                 <use href={`#card-${value}`}></use>
