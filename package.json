@@ -1,6 +1,6 @@
 {
   "name": "wizardly.cards",
-  "source": "index.html",
+  "source": "./src/index.html",
   "scripts": {
     "dev": "rm -r .parcel-cache && parcel serve",
     "build": "parcel build && tsc ./src/server.ts --outDir dist",
