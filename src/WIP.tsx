@@ -34,61 +34,7 @@ const Error = styled("div")`
 
 // -------------------------------
 
-type Err = { msg: string };
-
-const TimedError = ({
-  err,
-  remove,
-}: {
-  err: Err;
-  remove: (err: Err) => void;
-}) => {
-  useEffect(() => {
-    let timeout = setTimeout(() => {
-      remove(err);
-    }, 2500);
-    return () => clearTimeout(timeout);
-  }, [err]);
-
-  return <Error>{err.msg}</Error>;
-};
-
-const ErrorReciever = ({ err }: { err?: Err }) => {
-  const [errors, setErrors] = useState<Err[]>([]);
-
-  useEffect(() => {
-    if (!err) return;
-    setErrors((errs) => [...errs, err]);
-  }, [err]);
-
-  const remove = useCallback(
-    (err: Err) => setErrors((errs) => errs.filter((x) => x !== err)),
-    [setErrors]
-  );
-
-  return (
-    <Container>
-      {errors.map((err) => (
-        <TimedError key={err} err={err} remove={remove} />
-      ))}
-    </Container>
-  );
-};
-
-const WIP = () => {
-  const [error, setErrors] = useState<Err>(null);
-
-  return (
-    <>
-      <div>
-        <button onClick={() => setErrors({ msg: String(Math.random()) })}>
-          Add error
-        </button>
-      </div>
-      <ErrorReciever err={error} />
-    </>
-  );
-};
+const WIP = () => {};
 
 // -------------------------------
 console.clear();

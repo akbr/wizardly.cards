@@ -12,8 +12,10 @@ export const engine: WizardEngine = {
     "hands" in state
       ? {
           ...state,
-          hands: [state.hands[seatIndex]]
+          hands: state.hands.map((hand, idx) =>
+            idx === seatIndex ? hand : []
+          ),
         }
       : state,
-  createBot
+  createBot,
 };

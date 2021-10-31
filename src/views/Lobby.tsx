@@ -1,4 +1,3 @@
-import { Players } from "./types";
 import { styled, keyframes } from "goober";
 import { Fieldset, Container, Button } from "./common";
 import { Badge } from "./Badge";
@@ -21,7 +20,10 @@ const Link = styled("div")`
 `;
 
 type LobbyProps = {
-  players: Players;
+  players: {
+    avatar: string;
+    active: boolean;
+  }[];
   roomCode: string;
   isAdmin: boolean;
   start: () => void;

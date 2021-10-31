@@ -1,7 +1,7 @@
 import { WizardShape } from "./types";
+import { engine } from "./";
 import { AppInterfaces } from "../lib/appInterfaces/types";
 import { getHandHeight } from "../lib/cardsViews/handUpdate.calc";
-import { getPlayableCards } from "./logic";
 
 export const createActions = ({
   store,
@@ -9,7 +9,7 @@ export const createActions = ({
   meter,
 }: AppInterfaces<WizardShape>) => {
   const { send } = manager;
-  const { getState } = store;
+  const { getState, setState } = store;
   const { waitFor } = meter;
 
   return {
@@ -23,22 +23,28 @@ export const createActions = ({
     selectTrump: (suit: string) =>
       send(["engine", { type: "selectTrump", data: suit }]),
     play: (cardId: string) => send(["engine", { type: "play", data: cardId }]),
-    isInHand: (cardId?: string) => {
-      if (!cardId) return false;
-      let state = getState().state;
-      return "hands" in state ? state.hands[0].indexOf(cardId) !== -1 : false;
+    isInHand: (cardId = "") => {
+      let { state, room } = getState();
+      if (!room) return false;
+      return "hands" in state
+        ? state.hands[room.seatIndex].includes(cardId)
+        : false;
     },
     isValidPlay: (cardId: string) => {
       let { state, room } = getState();
-      if (
-        state.type === "play" &&
-        room &&
-        state.activePlayer === room.seatIndex
-      ) {
-        let playable = getPlayableCards(state.hands[0], state.trick.cards);
-        return playable.indexOf(cardId) !== -1;
+      if (!room || state.type !== "play") return false;
+      let nextState = engine.reducer(
+        state,
+        { type: "play", data: cardId },
+        room.seatIndex,
+        room.seats.length
+      );
+      if (nextState.type === "err") {
+        setState({ err: nextState });
+        return false;
+      } else {
+        return true;
       }
-      return false;
     },
     getTableDimensions: () => {
       let { state } = getState();

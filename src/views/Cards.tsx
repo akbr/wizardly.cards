@@ -27,7 +27,7 @@ export function Cards({ state, actions, room }: ViewProps) {
           }}
         />
       )}
-      {"hands" in state && <Hand hand={state.hands[0]} />}
+      {"hands" in state && <Hand hand={state.hands[room.seatIndex]} />}
     </>
   );
 }

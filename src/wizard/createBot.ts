@@ -22,7 +22,10 @@ export const createBot: WizardEngine["createBot"] =
     }
 
     if (state.type === "play") {
-      let playableCards = getPlayableCards(state.hands[0], state.trick.cards);
+      let playableCards = getPlayableCards(
+        state.hands[playerIndex],
+        state.trick.cards
+      );
       send({ type: "play", data: randomFromArray(playableCards) });
     }
   };

@@ -114,13 +114,18 @@ export const onPlay = (
   s: Bid | Play,
   cardId: PlayAction["data"]
 ): Play | SelectTrump | Bid | End | Msgs => {
-  const cardIsInHand = s.hands[s.activePlayer].indexOf(cardId) !== -1;
-  if (!cardIsInHand) return err("You don't have that card.");
+  const cardIsInHand = s.hands[s.activePlayer].includes(cardId);
+  if (!cardIsInHand)
+    return err(
+      "You don't have that card. You're cheating, or need to refresh the game."
+    );
 
-  const cardIsPlayable =
-    getPlayableCards(s.hands[s.activePlayer], s.trick.cards).indexOf(cardId) !==
-    -1;
-  if (!cardIsPlayable) return err("This card is not playable.");
+  const cardIsPlayable = getPlayableCards(
+    s.hands[s.activePlayer],
+    s.trick.cards
+  ).includes(cardId);
+  if (!cardIsPlayable)
+    return err("You must follow suit, or play a Wizard or Jester.");
 
   const nextTrickCards = [...s.trick.cards, cardId];
 
@@ -134,8 +139,8 @@ export const onPlay = (
     return hand.filter((card) => card !== cardId);
   });
 
-  const MoreTrickToGo = nextTrickCards.length !== s.numPlayers;
-  if (MoreTrickToGo) {
+  const TrickContinues = nextTrickCards.length !== s.numPlayers;
+  if (TrickContinues) {
     return {
       ...s,
       activePlayer: rotateIndex(s.numPlayers, s.activePlayer),

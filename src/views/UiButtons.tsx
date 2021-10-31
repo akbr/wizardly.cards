@@ -44,8 +44,8 @@ const Options = ({ exit }: { exit: () => void }) => {
 type TableButtonProps = {
   exit: () => void;
   scores?: number[][];
-  avatars: string[];
-  playerIndex: number;
+  avatars?: string[];
+  playerIndex?: number;
 };
 
 export const UiButtons = ({
@@ -78,7 +78,7 @@ export const UiButtons = ({
             <div style={{ display: "grid", placeContent: "center" }}>
               <ScoreTable
                 scores={scores}
-                avatars={avatars}
+                avatars={avatars || []}
                 playerIndex={playerIndex}
               />
             </div>
