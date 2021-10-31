@@ -27,7 +27,7 @@ export interface Engine<T extends EngineTypesShape> {
     seatIndex: number,
     numSeats: number
   ) => T["states"] | T["msgs"];
-  isState?: (x: T["states"] | T["msgs"]) => boolean;
+  isState: (x: Msg) => boolean;
   adapt?: (
     state: T["states"],
     seatIndex: number,

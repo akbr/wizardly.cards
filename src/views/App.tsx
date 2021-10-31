@@ -13,7 +13,6 @@ import { PlayInfo } from "./PlayInfo";
 import { ErrorReciever } from "./ErrorReceiver";
 
 import { avatars } from "./derivations";
-import { ComponentChildren } from "preact";
 
 export function App(props: ViewProps) {
   let { state, room, actions } = props;
@@ -34,7 +33,6 @@ export function App(props: ViewProps) {
   if (state.type === "lobby") {
     return (
       <>
-        <UiButtons exit={actions.exit} />
         <Lobby
           roomCode={room.id}
           isAdmin={room.seatIndex === 0}
@@ -43,6 +41,7 @@ export function App(props: ViewProps) {
           addBot={actions.addBot}
         />
         <ErrorReciever err={props.err} />
+        <UiButtons exit={actions.exit} />
       </>
     );
   }

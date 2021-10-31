@@ -2,6 +2,7 @@ import type {
   // Meta
   Msgs,
   // States
+  Core,
   Seed,
   SelectTrump,
   Bid,
@@ -45,16 +46,13 @@ export const toNextTurn = (s: Seed | Play): SelectTrump | Bid => {
       cards: [],
       leader: rotateIndex(s.numPlayers, dealer),
     },
-    bids: Array.from({ length: s.numPlayers }, () => false) as (
-      | number
-      | false
-    )[],
+    bids: Array.from({ length: s.numPlayers }, () => false) as Core["bids"],
     actuals: Array.from({ length: s.numPlayers }, () => 0),
     activePlayer: trumpCardIsWizard
       ? dealer
       : rotateIndex(s.numPlayers, dealer),
     scores:
-      "scores" in s ? ([...s.scores, s.bids, s.actuals] as number[][]) : [],
+      "scores" in s ? ([...s.scores, s.bids, s.actuals] as Core["scores"]) : [],
     // Carry over
     options: s.options,
     numPlayers: s.numPlayers,
@@ -116,16 +114,14 @@ export const onPlay = (
 ): Play | SelectTrump | Bid | End | Msgs => {
   const cardIsInHand = s.hands[s.activePlayer].includes(cardId);
   if (!cardIsInHand)
-    return err(
-      "You don't have that card. You're cheating, or need to refresh the game."
-    );
+    return err("You don't have that card! (Are you trying to cheat?).");
 
   const cardIsPlayable = getPlayableCards(
     s.hands[s.activePlayer],
     s.trick.cards
   ).includes(cardId);
   if (!cardIsPlayable)
-    return err("You must follow suit, or play a Wizard or Jester.");
+    return err("You must follow suit (or play a Wizard or Jester).");
 
   const nextTrickCards = [...s.trick.cards, cardId];
 
@@ -155,7 +151,7 @@ export const onPlay = (
   const actuals = s.actuals.map((actual, i) =>
     i === winner ? actual + 1 : actual
   );
-  const scores = [...s.scores, s.bids, actuals] as number[][];
+  const scores = [...s.scores, s.bids, actuals] as Core["scores"];
 
   const turnIsOver = nextHands[0].length === 0;
   const gameIsOver = turnIsOver && s.turn * s.numPlayers === 60;

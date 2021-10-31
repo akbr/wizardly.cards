@@ -7,22 +7,22 @@ export const getInitialState: WizardEngine["getInitialState"] = (
 ) =>
   toNextTurn({
     numPlayers: numSeats,
-    options: options || { canadian: false }
+    options: options || { canadian: false },
   });
 
 export const reducer: WizardEngine["reducer"] = (state, action, seatIndex) => {
   /**
    * Utility fns
    */
-  const actionIsValid = () =>
-    "activePlayer" in state &&
-    state.activePlayer === seatIndex &&
-    state.type === action.type;
+  const isTurn = () =>
+    "activePlayer" in state && state.activePlayer === seatIndex;
+  const actionMatch = () => state.type === action.type;
 
   const isString = (x: unknown) => typeof x === "string";
   const isNumber = (x: unknown) => typeof x === "number";
 
-  if (!actionIsValid()) return err("Not your turn");
+  if (!isTurn()) return err("Not your turn");
+  if (!actionMatch()) return err("It's not time for that kind of action.");
 
   /**
    * Waterfall

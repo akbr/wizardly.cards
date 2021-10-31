@@ -2,6 +2,7 @@ import { WizardShape } from "./types";
 import { engine } from "./";
 import { AppInterfaces } from "../lib/appInterfaces/types";
 import { getHandHeight } from "../lib/cardsViews/handUpdate.calc";
+import { deriveHand } from "../views/derivations";
 
 export const createActions = ({
   store,
@@ -23,17 +24,12 @@ export const createActions = ({
     selectTrump: (suit: string) =>
       send(["engine", { type: "selectTrump", data: suit }]),
     play: (cardId: string) => send(["engine", { type: "play", data: cardId }]),
-    isInHand: (cardId = "") => {
-      let { state, room } = getState();
-      if (!room) return false;
-      return "hands" in state
-        ? state.hands[room.seatIndex].includes(cardId)
-        : false;
-    },
+    isInHand: (cardId = "") => deriveHand(getState()).includes(cardId),
     isValidPlay: (cardId: string) => {
       let { state, room } = getState();
-      if (!room || state.type !== "play") return false;
+      if (!room || !engine.isState(state)) return false;
       let nextState = engine.reducer(
+        //@ts-ignore (has passed isState)
         state,
         { type: "play", data: cardId },
         room.seatIndex,
@@ -47,13 +43,12 @@ export const createActions = ({
       }
     },
     getTableDimensions: () => {
-      let { state } = getState();
-      let numCards = "hands" in state ? state.hands[0].length : 1;
+      let hand = deriveHand(getState());
       let screen = {
         w: window.innerWidth > 700 ? 700 : window.innerWidth,
         h: window.innerHeight,
       };
-      let space = getHandHeight(screen, numCards);
+      let space = getHandHeight(screen, hand.length || 1);
       let extraBuffer = 24;
       return {
         w: screen.w,
