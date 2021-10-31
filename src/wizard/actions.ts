@@ -14,8 +14,8 @@ export const createActions = ({
 
   return {
     join: (id?: string) => {
-      let data = id ? { data: { id } } : {};
-      send(["server", { type: "join", ...data }]);
+      //@ts-ignore
+      send(["server", { type: "join", data: { id } }]);
     },
     start: () => send(["server", { type: "start" }]),
     addBot: () => send(["server", { type: "addBot" }]),

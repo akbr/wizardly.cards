@@ -64,7 +64,7 @@ export function createSocketManager<I, O>(arg: Server<I, O> | string) {
     send,
     getStatus,
     onData: () => undefined,
-    onStatus: () => undefined
+    onStatus: () => undefined,
   };
 
   return manager;

@@ -1,7 +1,13 @@
-//@ts-nocheck
 import { setup, styled, css, keyframes } from "goober";
 import { h, render } from "preact";
-import { useRef, Ref, useState, useLayoutEffect } from "preact/hooks";
+import {
+  useRef,
+  Ref,
+  useState,
+  useLayoutEffect,
+  useCallback,
+  useEffect,
+} from "preact/hooks";
 import { rotateArray } from "./lib/array";
 import { DeadCenterWrapper } from "./views/common";
 import { TrumpInput } from "./views/TrumpInput";
@@ -9,30 +15,78 @@ import { ScoreTable } from "./views/ScoreTable";
 import { DialogOf } from "./views/Dialog";
 
 setup(h);
+
+const Container = styled("div")`
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const Error = styled("div")`
+  display: inline-block;
+  background-color: red;
+  padding: 6px;
+  border-radius: 4px;
+`;
+
 // -------------------------------
 
-const WIP = () => {
-  let [visible, setVisible] = useState(true);
+type Err = { msg: string };
+
+const TimedError = ({
+  err,
+  remove,
+}: {
+  err: Err;
+  remove: (err: Err) => void;
+}) => {
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      remove(err);
+    }, 2500);
+    return () => clearTimeout(timeout);
+  }, [err]);
+
+  return <Error>{err.msg}</Error>;
+};
+
+const ErrorReciever = ({ err }: { err?: Err }) => {
+  const [errors, setErrors] = useState<Err[]>([]);
+
+  useEffect(() => {
+    if (!err) return;
+    setErrors((errs) => [...errs, err]);
+  }, [err]);
+
+  const remove = useCallback(
+    (err: Err) => setErrors((errs) => errs.filter((x) => x !== err)),
+    [setErrors]
+  );
 
   return (
-    <DialogOf visible={visible} close={() => setVisible(false)}>
-      {visible && (
-        <div style="display: grid; place-content: center;">
-          <ScoreTable
-            avatars={["🐵", "🐸", "🦊"]}
-            scores={[
-              [1, 1, 1],
-              [1, 0, 0],
-              [1, 1, 1],
-              [1, 0, 0],
-              [2, 1, 1],
-              [0, 1, 1],
-            ]}
-            playerIndex={0}
-          />
-        </div>
-      )}
-    </DialogOf>
+    <Container>
+      {errors.map((err) => (
+        <TimedError key={err} err={err} remove={remove} />
+      ))}
+    </Container>
+  );
+};
+
+const WIP = () => {
+  const [error, setErrors] = useState<Err>(null);
+
+  return (
+    <>
+      <div>
+        <button onClick={() => setErrors({ msg: String(Math.random()) })}>
+          Add error
+        </button>
+      </div>
+      <ErrorReciever err={error} />
+    </>
   );
 };
 

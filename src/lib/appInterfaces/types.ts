@@ -3,7 +3,8 @@ import type {
   EngineTypesShape,
   OutputsWith,
   InputsWith,
-  Room
+  ServerTypes,
+  Room,
 } from "../server//types";
 import { Meter } from "../timing";
 import { StoreApi } from "zustand/vanilla";
@@ -20,6 +21,7 @@ export type AllStates<ET extends EngineTypesShape> =
 export type StoreShape<ET extends EngineTypesShape> = {
   state: AllStates<ET>;
   room: Room["data"];
+  err: ET["msgs"] | ServerTypes<ET>["msgs"] | false;
 };
 
 export type ManagerWith<ET extends EngineTypesShape> = SocketManager<

@@ -1,13 +1,12 @@
-import create from "zustand/vanilla";
 import type { Server, Socket } from "../socket/types";
 import type {
   Engine,
   EngineTypesShape,
   InputsWith,
-  OutputsWith
+  OutputsWith,
 } from "./types";
 
-import { getRoomId } from "./utils";
+import { getRandomRoomID } from "./utils";
 
 export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
   // Types
@@ -39,7 +38,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     getInitialState,
     reducer,
     isState,
-    adapt = (x) => x
+    adapt = (x) => x,
   } = engine;
 
   function createRoom(id: string) {
@@ -47,7 +46,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       id,
       seats: [],
       spectators: [],
-      state: autoStart ? getInitialState(0) : false
+      state: autoStart ? getInitialState(0) : false,
     });
     return rooms.get(id) as Room;
   }
@@ -73,9 +72,9 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
             seats,
             spectators,
             seatIndex: room.seats.indexOf(socket),
-            started: room.state ? true : false
-          }
-        }
+            started: room.state ? true : false,
+          },
+        },
       ]);
     });
   }
@@ -89,13 +88,13 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       send: (action) => {
         serverApi.onInput(serverSocket, action);
       },
-      close: () => serverApi.onClose(serverSocket)
+      close: () => serverApi.onClose(serverSocket),
     };
 
     let botFn = engine.createBot(
       {
         send: (action) => botSocket.send(["engine", action]),
-        close: botSocket.close
+        close: botSocket.close,
       },
       undefined
     );
@@ -111,7 +110,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
         let playerIndex = room ? room.seats.indexOf(serverSocket) : undefined;
         botFn(data, playerIndex);
       },
-      close: () => serverApi.onClose(serverSocket)
+      close: () => serverApi.onClose(serverSocket),
     };
 
     botSockets.add(serverSocket);
@@ -120,8 +119,8 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       "server",
       {
         type: "join",
-        data: { id }
-      }
+        data: { id },
+      },
     ]);
   }
 
@@ -132,13 +131,13 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
   ): string | void {
     let room: Room;
 
-    if (id) {
-      let fetched = rooms.get(id);
-      if (!fetched) return `No such room exists`;
-      room = fetched;
+    if (id !== undefined) {
+      id = id.toUpperCase();
+      if (id.length !== 4) return `Invalid room code format.`;
+      room = rooms.get(id) || createRoom(id);
     } else {
-      let id = getRoomId();
-      while (rooms.get(id)) id = getRoomId();
+      let id = getRandomRoomID();
+      while (rooms.get(id)) id = getRandomRoomID();
       room = createRoom(id);
     }
 
@@ -150,7 +149,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       if (room.state) {
         socket.send([
           "engine",
-          adapt(room.state, room.seats.indexOf(socket), room.seats.length)
+          adapt(room.state, room.seats.indexOf(socket), room.seats.length),
         ]);
       }
     };
@@ -175,7 +174,8 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
         return `Can't skip seats. Next seat is ${numSeats}`;
       }
 
-      let seatOpen = room.seats[requestedPlayerIndex] === false;
+      let seatOpen =
+        room.seats.length === 0 || room.seats[requestedPlayerIndex] === false;
 
       if (!seatOpen) {
         return `Seat ${requestedPlayerIndex} is occupied`;
@@ -199,7 +199,6 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     let roomIsEmpty =
       room.seats.filter((socket) => socket && !botSockets.has(socket))
         .length === 0;
-
     if (roomIsEmpty) {
       let socketsToEject = [socket, ...room.spectators];
       socketsToEject.forEach((socket) => {
@@ -222,7 +221,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       if (socket && room.state)
         socket.send([
           "engine",
-          adapt(room.state, seatIndex, room.seats.length)
+          adapt(room.state, seatIndex, room.seats.length),
         ]);
     });
   }
@@ -236,7 +235,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       if (socket) {
         socket.send([
           "serverMsg",
-          { type: "error", data: "Game hasn't yet started." }
+          { type: "error", data: "Game hasn't yet started." },
         ]);
       }
       return;
@@ -282,7 +281,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     if (!room) {
       socket.send([
         "serverMsg",
-        { type: "error", data: "You are not in a room." }
+        { type: "error", data: "You are not in a room." },
       ]);
       return;
     }
@@ -294,7 +293,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
         if (!engine.createBot) {
           socket.send([
             "serverMsg",
-            { type: "error", data: "No bot creator specified." }
+            { type: "error", data: "No bot creator specified." },
           ]);
         }
         createBot(room.id, action.data);
@@ -306,7 +305,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
         if (!isPlayer0) {
           socket.send([
             "serverMsg",
-            { type: "error", data: "You aren't the room creator." }
+            { type: "error", data: "You aren't the room creator." },
           ]);
         }
 
@@ -315,8 +314,8 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
             "serverMsg",
             {
               type: "error",
-              data: "Wrong number of players."
-            }
+              data: "Wrong number of players.",
+            },
           ]);
           return;
         }
@@ -329,7 +328,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
 
       socket.send([
         "serverMsg",
-        { type: "error", data: "Invalid server command." }
+        { type: "error", data: "Invalid server command." },
       ]);
     }
 
@@ -355,7 +354,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
           id,
           state,
           seats: seats.map(() => false),
-          spectators: []
+          spectators: [],
         };
       });
       return JSON.stringify(roomObj);
@@ -366,7 +365,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
         //@ts-ignore
         rooms.set(room.id, room);
       });
-    }
+    },
   };
 
   return serverApi;

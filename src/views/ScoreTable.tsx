@@ -62,7 +62,6 @@ export const ScoreTable = ({
   scores,
   playerIndex = 0,
 }: ScoreTableProps) => {
-  console.log("SCORES!AHH");
   if (scores.length === 0) return <div>No scores yet</div>; // this is because inital scores is [] rather than [[]]. fix in reducer.
 
   avatars = rotateArray(avatars, -playerIndex);

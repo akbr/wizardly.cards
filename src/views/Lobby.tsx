@@ -6,8 +6,8 @@ import { Badge } from "./Badge";
 const PlayerBox = styled(Fieldset)`
   display: inline-flex;
   justify-content: center;
-  gap: 1em;
-  padding: 1em;
+  gap: 0.5em;
+  padding: 0.5em;
 `;
 
 const Link = styled("div")`
@@ -49,7 +49,7 @@ export const Lobby = ({
   roomCode,
   isAdmin,
   start,
-  addBot
+  addBot,
 }: LobbyProps) => {
   const url = window.location.host + "/#" + roomCode;
 

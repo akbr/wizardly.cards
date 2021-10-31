@@ -13,11 +13,12 @@ export function createStore<ET extends EngineTypesShape>(
 
   const store = createZStore<StoreShape<ET>>(() => ({
     state: { type: "init" },
-    room: false
+    room: false,
+    err: false,
   }));
 
   meter.subscribe((state) => {
-    store.setState({ state });
+    store.setState({ state, err: false });
   });
 
   let prev: ET["states"] | undefined;
@@ -38,7 +39,7 @@ export function createStore<ET extends EngineTypesShape>(
     }
 
     if (res[0] === "engineMsg") {
-      console.warn(res[1]);
+      store.setState({ err: res[1] });
     }
 
     if (res[0] === "server") {
@@ -48,7 +49,7 @@ export function createStore<ET extends EngineTypesShape>(
         meter.push({ type: "lobby" });
         prev = undefined;
       }
-      store.setState({ room });
+      store.setState({ room, err: false });
     }
 
     let room = store.getState().room;
@@ -57,7 +58,7 @@ export function createStore<ET extends EngineTypesShape>(
     );
 
     if (res[0] === "serverMsg") {
-      console.warn(res[1]);
+      store.setState({ err: res[1] });
     }
   };
 
@@ -66,7 +67,7 @@ export function createStore<ET extends EngineTypesShape>(
     if (id !== undefined) {
       manager.send([
         "server",
-        { type: "join", data: { id, seatIndex: playerIndex } }
+        { type: "join", data: { id, seatIndex: playerIndex } },
       ]);
     } else {
       meter.push({ type: "title" });

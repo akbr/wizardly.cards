@@ -10,14 +10,21 @@ import { Cards } from "./Cards";
 import { Players } from "./Players";
 import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
+import { ErrorReciever } from "./ErrorReceiver";
 
 import { avatars } from "./derivations";
+import { ComponentChildren } from "preact";
 
 export function App(props: ViewProps) {
   let { state, room, actions } = props;
 
   if (state.type === "title" || !room) {
-    return <Title join={actions.join} />;
+    return (
+      <>
+        <Title join={actions.join} />
+        <ErrorReciever err={props.err} />
+      </>
+    );
   }
 
   if (state.type === "end") {
@@ -35,6 +42,7 @@ export function App(props: ViewProps) {
           start={actions.start}
           addBot={actions.addBot}
         />
+        <ErrorReciever err={props.err} />
       </>
     );
   }
@@ -76,6 +84,7 @@ export function App(props: ViewProps) {
         playerIndex={room.seatIndex}
         exit={actions.exit}
       />
+      <ErrorReciever err={props.err} />
     </DragSurface>
   );
 }

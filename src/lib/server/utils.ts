@@ -4,7 +4,7 @@ export function randomBetween(n1: number, n2: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-export const getRoomId = (length = 4) =>
+export const getRandomRoomID = (length = 4) =>
   String.fromCharCode(
     ...Array.from({ length }).map(() => randomBetween(65, 90))
   );
