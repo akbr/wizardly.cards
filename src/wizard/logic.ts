@@ -1,4 +1,4 @@
-import { indexOfMax } from "../lib/array";
+import { indexOfMax, shuffle } from "../lib/array";
 
 const SEPERATOR = "|";
 const split = (cardId: string) => cardId.split(SEPERATOR);
@@ -6,7 +6,7 @@ const getValue = (cardId: string) => parseInt(split(cardId)[0], 10);
 const getSuit = (cardId: string) => split(cardId)[1];
 const getTuple = (cardId: string): [number, string] => [
   getValue(cardId),
-  getSuit(cardId)
+  getSuit(cardId),
 ];
 
 const combineAll = <T1, T2>(
@@ -18,18 +18,7 @@ const combineAll = <T1, T2>(
     .map((s) => values.map((v) => [v, s].join(seperator || SEPERATOR)))
     .flat(1);
 
-const shuffle = <T>(arr: T[]) => {
-  let m = arr.length;
-  let t: T;
-  let i: number;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = arr[m];
-    arr[m] = arr[i];
-    arr[i] = t;
-  }
-  return arr;
-};
+// ---
 
 const getStandardDeck = () =>
   combineAll(
@@ -39,18 +28,28 @@ const getStandardDeck = () =>
 
 const getWizardDeck = () => combineAll(["w", "j"], [1, 2, 3, 4]);
 
+// ---
+
 const sortDeck = (hand: string[], order = ["c", "d", "h", "s"]) => {
   const bySuit: { [key: string]: number[] } = {};
   const sortedHand: string[] = [];
+
   hand.forEach((cardId) => {
     let [value, suit] = getTuple(cardId);
     bySuit[suit] = bySuit[suit] || [];
     bySuit[suit].push(value);
   });
+
   order.forEach((suit) => {
     if (!bySuit[suit]) return;
-    sortedHand.push(...combineAll([suit], bySuit[suit].sort()));
+    sortedHand.push(
+      ...combineAll(
+        [suit],
+        bySuit[suit].sort((a, b) => a - b)
+      )
+    );
   });
+
   return sortedHand;
 };
 
@@ -77,7 +76,7 @@ export const getDealtCards = (numPlayers: number, numCards: number) => {
   return {
     hands,
     trumpCard: trumpCard,
-    trumpSuit: trumpSuit
+    trumpSuit: trumpSuit,
   } as const;
 };
 
@@ -88,55 +87,43 @@ const winnerWithinSuit = (cards: string[], suit: string) => {
   return indexOfMax(modValues);
 };
 
-/**
- * Returns the first non-jester suit in the trick _or_ the jester suit if only jesters are present.
- * REMEMBER: Wizards count as a "suit.""
- */
-const getLeadSuit = (trick: string[]) => {
-  let suits = trick.map(getSuit);
-  let firstNonJesterIndex = suits.findIndex((s) => s !== "j");
-  return firstNonJesterIndex === -1 ? "j" : suits[firstNonJesterIndex];
-};
+const getLeadSuit = (trick: string[]) =>
+  trick.map(getSuit).find((suit) => suit !== "j" && suit !== "w");
 
 export const getWinningIndex = (
   trick: string[],
   trumpSuit: string | undefined
 ) => {
-  let suits = trick.map(getSuit);
+  const suits = trick.map(getSuit);
+
   // First wizard wins
-  let firstWizard = suits.indexOf("w");
-  if (firstWizard !== -1) return firstWizard;
+  const firstWizardIndex = suits.indexOf("w");
+  if (firstWizardIndex !== -1) return firstWizardIndex;
 
   // Highest trump wins
-  if (trumpSuit && suits.indexOf(trumpSuit) !== -1) {
-    return winnerWithinSuit(trick, trumpSuit);
-  }
+  const trumpSuitPlayed = trumpSuit && suits.includes(trumpSuit);
+  if (trumpSuitPlayed) return winnerWithinSuit(trick, trumpSuit);
 
-  let leadSuit = getLeadSuit(trick);
+  // Highest of led suit wins
+  const leadSuit = getLeadSuit(trick);
+  if (leadSuit) return winnerWithinSuit(trick, leadSuit);
 
-  // If all jesters, first jester wins
-  if (leadSuit === "j") return 0;
-
-  // Highest lead suit wins
-  return winnerWithinSuit(trick, leadSuit);
+  // All jesters; lead card wins
+  return 0;
 };
 
 export const getPlayableCards = (hand: string[], trick: string[]) => {
   if (trick.length === 0) return hand;
 
   let leadSuit = getLeadSuit(trick);
-
-  if (leadSuit === "w" || leadSuit === "j") return hand;
+  if (!leadSuit) return hand;
 
   let suits = hand.map(getSuit);
-  let leadSuitInHand = suits.indexOf(leadSuit) !== -1;
 
-  if (!leadSuitInHand) return hand;
+  if (!suits.includes(leadSuit)) return hand;
 
-  let playableCardsWithLeadSuit = (_: unknown, i: number) =>
-    suits[i] === "w" || suits[i] === "j" || suits[i] === leadSuit;
-
-  return hand.filter(playableCardsWithLeadSuit);
+  let playableSuits = [leadSuit, "w", "j"];
+  return hand.filter((_, i) => playableSuits.includes(suits[i]));
 };
 
 export const isValidBid = (
@@ -145,7 +132,7 @@ export const isValidBid = (
     canadian = false,
     bids,
     numPlayers,
-    turn
+    turn,
   }: {
     canadian?: boolean;
     bids: (number | false)[];
@@ -153,7 +140,9 @@ export const isValidBid = (
     turn: number;
   }
 ) => {
+  if (!canadian) return true;
   const nummedBids = bids.map((x) => (x === false ? 0 : x));
   const totalBids = nummedBids.reduce((prev, curr) => prev + curr, 0) + bid;
-  return !(canadian && numPlayers === bids.length + 1 && totalBids === turn);
+  const isLastBid = numPlayers === bids.length + 1;
+  return !(isLastBid && totalBids === turn);
 };
