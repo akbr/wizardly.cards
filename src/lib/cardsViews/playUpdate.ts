@@ -12,8 +12,8 @@ import shallow from "zustand/shallow";
 
 export type PlayProps = {
   numPlayers: number;
-  playerPerspective: number;
-  startPlayer: number;
+  seatIndex: number;
+  leadPlayer: number;
   trick: string[];
   winningIndex?: number;
   cardDimensions?: Dimensions;
@@ -25,11 +25,11 @@ export const playUpdate = (
   {
     trick,
     numPlayers,
-    startPlayer,
-    playerPerspective,
+    leadPlayer,
+    seatIndex,
     tableDimensions = { w: window.innerWidth, h: window.innerHeight },
     winningIndex,
-    cardDimensions = { w: 80, h: 112 }
+    cardDimensions = { w: 80, h: 112 },
   }: PlayProps,
   prev?: PlayProps
 ) => {
@@ -39,7 +39,7 @@ export const playUpdate = (
   // Calculate positions
   // -------------------
   const adjustedSeatIndexes = trick.map((_, i) =>
-    rotateIndex(numPlayers, i, startPlayer - playerPerspective)
+    rotateIndex(numPlayers, i, leadPlayer - seatIndex)
   );
 
   const playedPositions = trick.map((_, i) => ({
@@ -48,7 +48,7 @@ export const playUpdate = (
       tableDimensions,
       cardDimensions
     ),
-    r: randomBetween(-1.5, 1.5, trick[i] + _)
+    r: randomBetween(-1.5, 1.5, trick[i] + _),
   }));
 
   const heldPositions = trick.map((_, i) =>
@@ -80,8 +80,7 @@ export const playUpdate = (
   // Build
   // --------------
   let playedByUser =
-    rotateIndex(numPlayers, trick.length - 1, startPlayer) ===
-    playerPerspective;
+    rotateIndex(numPlayers, trick.length - 1, leadPlayer) === seatIndex;
 
   const timeline = [
     () => {
@@ -92,15 +91,16 @@ export const playUpdate = (
           : {
               x: heldPositions[endIndex].x + randomBetween(-10, 10),
               y: heldPositions[endIndex].y + randomBetween(-10, 10),
-              r: randomBetween(-25, 25)
+              r: randomBetween(-25, 25),
             }
       );
     },
     () =>
       style($lastCard, playedPositions[endIndex], {
-        duration: playedByUser ? 200 : randomBetween(300, 500)
-      })
+        duration: playedByUser ? 200 : randomBetween(300, 500),
+      }),
   ];
+
   // Win animation
   // -------------
   if (winningIndex !== undefined) {
@@ -108,7 +108,7 @@ export const playUpdate = (
       const getAmt = () => randomBetween(amt, amt2);
       return [0, getAmt(), 0, -getAmt(), 0, getAmt(), -getAmt() / 4].map(
         (r) => ({
-          r
+          r,
         })
       );
     };
@@ -123,14 +123,14 @@ export const playUpdate = (
         // Waggle winning card
         style($winningCard, waggleFrames(10, 20), {
           duration: 750,
-          delay: 500
+          delay: 500,
         });
         // Coalesce losing cards
         style(
           $losingCards,
           {
             ...playedPositions[winningIndex],
-            r: () => randomBetween(-20, 20)
+            r: () => randomBetween(-20, 20),
           },
           { duration: 300, delay: 1350 }
         );
@@ -139,7 +139,7 @@ export const playUpdate = (
           $trick,
           {
             ...heldPositions[winningIndex],
-            r: 45
+            r: 45,
           },
           { duration: 350, delay: 1700 }
         );

@@ -14,8 +14,8 @@ export function Cards({ state, actions, room }: ViewProps) {
             getTableDimensions: actions.getTableDimensions,
             trick: state.trick.cards,
             numPlayers: state.numPlayers,
-            playerPerspective: room.seatIndex,
-            startPlayer: state.trick.leader,
+            seatIndex: room.seatIndex,
+            leadPlayer: state.trick.leader,
             winningIndex:
               state.type === "trickWin"
                 ? rotateIndex(

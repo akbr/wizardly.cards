@@ -10,15 +10,13 @@ export function derivePlayers({ state, room }: Store) {
   if (!room) return [];
 
   let activePlayer = "activePlayer" in state ? state.activePlayer : -1;
+  let players = room.seats.map((_, idx) => ({
+    avatar: avatars[idx],
+    name: "",
+    active: idx === activePlayer,
+  }));
 
-  return rotateArray(
-    room.seats.map((_, idx) => ({
-      avatar: avatars[idx],
-      name: "",
-      active: idx === activePlayer,
-    })),
-    -room.seatIndex
-  );
+  return rotateArray(players, -room.seatIndex);
 }
 
 export function deriveBids({ state, room }: Store) {

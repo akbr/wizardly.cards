@@ -34,7 +34,8 @@ export function TrumpInput({ active, selectTrump }: TrumpInputProps) {
       </select>
       <Button
         onClick={() => {
-          selectTrump(ref.current && ref.current.value);
+          //@ts-ignore
+          selectTrump(ref.current.value);
         }}
       >
         Submit

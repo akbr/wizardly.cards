@@ -12,18 +12,21 @@ import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
 import { ErrorReciever } from "./ErrorReceiver";
 
-import { avatars } from "./derivations";
-
 export function App(props: ViewProps) {
+  return (
+    <>
+      <UiButtons {...props} />
+      <AppInner {...props} />
+      <ErrorReciever err={props.err} />
+    </>
+  );
+}
+
+function AppInner(props: ViewProps) {
   let { state, room, actions } = props;
 
   if (state.type === "title" || !room) {
-    return (
-      <>
-        <Title join={actions.join} />
-        <ErrorReciever err={props.err} />
-      </>
-    );
+    return <Title join={actions.join} />;
   }
 
   if (state.type === "end") {
@@ -32,30 +35,20 @@ export function App(props: ViewProps) {
 
   if (state.type === "lobby") {
     return (
-      <>
-        <Lobby
-          roomCode={room.id}
-          isAdmin={room.seatIndex === 0}
-          players={derivePlayers(props)}
-          start={actions.start}
-          addBot={actions.addBot}
-        />
-        <ErrorReciever err={props.err} />
-        <UiButtons exit={actions.exit} />
-      </>
+      <Lobby
+        roomCode={room.id}
+        isAdmin={room.seatIndex === 0}
+        players={derivePlayers(props)}
+        start={actions.start}
+        addBot={actions.addBot}
+      />
     );
   }
 
   let { waitFor } = actions;
-  if (state.type === "deal") {
-    waitFor(2000);
-  }
-  if (state.type === "bid") {
-    waitFor(500);
-  }
-  if (state.type === "turnOver") {
-    waitFor(1000);
-  }
+  if (state.type === "deal") waitFor(2000);
+  if (state.type === "bid") waitFor(500);
+  if (state.type === "turnOver") waitFor(1000);
 
   let { isInHand, play, isValidPlay, getTableDimensions } = actions;
 
@@ -77,13 +70,6 @@ export function App(props: ViewProps) {
         />
       )}
       <Cards {...props} />
-      <UiButtons
-        scores={state.scores}
-        avatars={room.seats.map((_, idx) => avatars[idx])}
-        playerIndex={room.seatIndex}
-        exit={actions.exit}
-      />
-      <ErrorReciever err={props.err} />
     </DragSurface>
   );
 }

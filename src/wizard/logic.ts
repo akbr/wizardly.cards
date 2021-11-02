@@ -30,7 +30,7 @@ const getWizardDeck = () => combineAll(["w", "j"], [1, 2, 3, 4]);
 
 // ---
 
-const sortDeck = (hand: string[], order = ["c", "d", "h", "s"]) => {
+const sortHand = (hand: string[], order = ["c", "d", "h", "s"]) => {
   const bySuit: { [key: string]: number[] } = {};
   const sortedHand: string[] = [];
 
@@ -55,18 +55,21 @@ const sortDeck = (hand: string[], order = ["c", "d", "h", "s"]) => {
 
 export const getDealtCards = (numPlayers: number, numCards: number) => {
   const deck = shuffle([...getStandardDeck(), ...getWizardDeck()]);
+  const sortOrder = ["j", "c", "d", "h", "s", "w"];
 
   const hands = Array.from({ length: numPlayers })
     .map(() => {
-      let hand = [];
+      const hand: string[] = [];
       let i = 0;
       while (i < numCards) {
-        hand.push(deck.pop() as string);
+        let card = deck.pop();
+        if (!card) throw new Error("Ran out of cards in the deck.");
+        hand.push(card);
         i++;
       }
       return hand;
     })
-    .map((hand) => sortDeck(hand, ["j", "c", "d", "h", "s", "w"]));
+    .map((hand) => sortHand(hand, sortOrder));
 
   const trumpCard = deck.pop() || false;
 
@@ -75,15 +78,15 @@ export const getDealtCards = (numPlayers: number, numCards: number) => {
 
   return {
     hands,
-    trumpCard: trumpCard,
-    trumpSuit: trumpSuit,
+    trumpCard,
+    trumpSuit,
   } as const;
 };
 
 const winnerWithinSuit = (cards: string[], suit: string) => {
-  let suits = cards.map(getSuit);
-  let values = cards.map(getValue);
-  let modValues = values.map((v, i) => (suits[i] === suit ? v : -1));
+  const suits = cards.map(getSuit);
+  const values = cards.map(getValue);
+  const modValues = values.map((v, i) => (suits[i] === suit ? v : -1));
   return indexOfMax(modValues);
 };
 
@@ -115,14 +118,13 @@ export const getWinningIndex = (
 export const getPlayableCards = (hand: string[], trick: string[]) => {
   if (trick.length === 0) return hand;
 
-  let leadSuit = getLeadSuit(trick);
+  const leadSuit = getLeadSuit(trick);
   if (!leadSuit) return hand;
 
-  let suits = hand.map(getSuit);
-
+  const suits = hand.map(getSuit);
   if (!suits.includes(leadSuit)) return hand;
 
-  let playableSuits = [leadSuit, "w", "j"];
+  const playableSuits = [leadSuit, "w", "j"];
   return hand.filter((_, i) => playableSuits.includes(suits[i]));
 };
 
@@ -140,9 +142,19 @@ export const isValidBid = (
     turn: number;
   }
 ) => {
+  const isInRange = bid >= 0 && bid <= turn;
+  if (!isInRange) return false;
+
   if (!canadian) return true;
-  const nummedBids = bids.map((x) => (x === false ? 0 : x));
-  const totalBids = nummedBids.reduce((prev, curr) => prev + curr, 0) + bid;
+
   const isLastBid = numPlayers === bids.length + 1;
-  return !(isLastBid && totalBids === turn);
+  if (!isLastBid) return true;
+
+  const totalBids =
+    bid +
+    bids
+      .map((x) => (x === false ? 0 : x))
+      .reduce((total, thisBid) => total + thisBid, 0);
+
+  return totalBids !== turn;
 };

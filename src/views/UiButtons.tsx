@@ -4,8 +4,10 @@ import { useState, useCallback } from "preact/hooks";
 import { a, topMargins } from "./commonCss";
 import { EmojiButton, Button } from "./common";
 
+import { ViewProps } from "../wizard/types";
 import { DialogOf } from "./Dialog";
 import { ScoreTable } from "./ScoreTable";
+import { derivePlayers } from "./derivations";
 
 let flex = css`
   display: flex;
@@ -48,12 +50,7 @@ type TableButtonProps = {
   playerIndex?: number;
 };
 
-export const UiButtons = ({
-  scores,
-  avatars,
-  playerIndex,
-  exit,
-}: TableButtonProps) => {
+export const UiButtons = (props: ViewProps) => {
   const [optionsVisible, setOptions] = useState(false);
   const [scoresVisible, setScores] = useState(false);
 
@@ -62,10 +59,19 @@ export const UiButtons = ({
 
   const openScores = useCallback(() => setScores(true), []);
   const closeScores = useCallback(() => setScores(false), []);
+  const exit = useCallback(() => {
+    closeOptions();
+    props.actions.exit();
+  }, []);
+
+  let { state, room, actions } = props;
+  let scores = "scores" in state ? state.scores : false;
+  let players = derivePlayers(props);
+  let playerIndex = room ? room.seatIndex : -1;
 
   return (
     <Fragment>
-      <div class={`${a} ${flex} ${topMargins}`}>
+      <div class={`${a} ${flex} ${topMargins}`} style={{ zIndex: "500" }}>
         <OptionsButton open={openOptions} />
         {scores && <ScoresButton open={openScores} />}
       </div>
@@ -78,7 +84,7 @@ export const UiButtons = ({
             <div style={{ display: "grid", placeContent: "center" }}>
               <ScoreTable
                 scores={scores}
-                avatars={avatars || []}
+                avatars={players.map((player) => player.avatar)}
                 playerIndex={playerIndex}
               />
             </div>

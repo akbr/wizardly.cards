@@ -1,6 +1,6 @@
 export function rotateIndex(length: number, index: number, steps = 1) {
-  let modSteps = Math.abs(steps) > length - 1 ? steps % length : steps;
-  let nextIndex = index + modSteps;
+  const modSteps = Math.abs(steps) > length - 1 ? steps % length : steps;
+  const nextIndex = index + modSteps;
   return nextIndex < 0
     ? nextIndex + length
     : nextIndex > length - 1
@@ -8,11 +8,13 @@ export function rotateIndex(length: number, index: number, steps = 1) {
     : nextIndex;
 }
 
-export function rotateArray<T>(array: T[], numSteps: number) {
-  return array.reduce((slidArray, value, oldIdx) => {
-    slidArray[rotateIndex(array.length, oldIdx, numSteps)] = value;
-    return slidArray;
-  }, Array.from({ length: array.length }) as T[]);
+export function rotateArray<T>(array: T[], numSteps = 1) {
+  const rotatedArray = array.concat();
+  array.forEach((value, index) => {
+    const newIndex = rotateIndex(array.length, index, numSteps);
+    rotatedArray[newIndex] = value;
+  });
+  return rotatedArray;
 }
 
 export function shuffle<T>(array: T[]) {
@@ -35,6 +37,7 @@ export function indexOfMax(arr: number[]) {
 
   let max = arr[0];
   let maxIndex = 0;
+
   for (let i = 1; i < arr.length; i++) {
     if (arr[i] > max) {
       maxIndex = i;
