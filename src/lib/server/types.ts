@@ -23,9 +23,11 @@ export interface Engine<T extends EngineTypesShape> {
   getInitialState: (numSeats: number, options?: T["options"]) => T["states"];
   reducer: (
     state: T["states"],
-    action: T["actions"],
-    seatIndex: number,
-    numSeats: number
+    context: { numSeats: number },
+    input?: {
+      action: T["actions"];
+      seatIndex: number;
+    }
   ) => T["states"] | T["msgs"];
   isState: (x: Msg) => boolean;
   adapt?: (
@@ -48,15 +50,13 @@ export type GetUiStates<T extends EngineTypesShape> = (
 
 export type Room = {
   type: "room";
-  data:
-    | {
-        id: string;
-        seats: string[];
-        spectators: number;
-        seatIndex: number;
-        started: boolean;
-      }
-    | false;
+  data: {
+    id: string;
+    seats: string[];
+    spectators: number;
+    seatIndex: number;
+    started: boolean;
+  } | null;
 };
 
 export type Error = {

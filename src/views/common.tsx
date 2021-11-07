@@ -10,6 +10,7 @@ export const Container = styled("div")`
   display: flex;
   align-items: center;
   flex-direction: column;
+  text-align: center;
   height: 100%;
   gap: 16px;
   margin-top: 48px;
@@ -44,8 +45,9 @@ const ButtonBase = styled("button")`
 `;
 
 export const Button = styled(ButtonBase)`
-  padding: 1em;
+  padding: 12px;
   color: white;
   background-color: mediumblue;
-  border-radius: 1em;
+  border-radius: 12px;
+  font-size: 1.25em;
 `;

@@ -8,22 +8,30 @@ import type {
 
 import { getRandomRoomID } from "./utils";
 
-export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
-  // Types
-  // --------------
-  type Api = Server<InputsWith<ET>, OutputsWith<ET>>;
-  type ServerSocket = Socket<OutputsWith<ET>, InputsWith<ET>>;
+export type ServerApi<ET extends EngineTypesShape> = Server<
+  InputsWith<ET>,
+  OutputsWith<ET>
+>;
 
-  type Room = {
-    id: string;
-    seats: (ServerSocket | false)[];
-    spectators: ServerSocket[];
-    state: ET["states"] | false;
-  };
+type InternalSocket<ET extends EngineTypesShape> = Socket<
+  OutputsWith<ET>,
+  InputsWith<ET>
+>;
+
+type InternalRoom<ET extends EngineTypesShape> = {
+  id: string;
+  seats: (InternalSocket<ET> | false)[];
+  spectators: InternalSocket<ET>[];
+  state: ET["states"] | false;
+};
+
+export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
+  type ServerSocket = InternalSocket<ET>;
+  type Room = InternalRoom<ET>;
 
   // State
   // --------------
-  let serverApi: Api;
+  let serverApi: ServerApi<ET>;
   const rooms = new Map<string, Room>();
   const sockets = new Map<ServerSocket, string | false>();
   const botSockets = new Set<ServerSocket>();
@@ -37,7 +45,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     autoStart = false,
     getInitialState,
     reducer,
-    isState,
+    isState = (x) => true,
     adapt = (x) => x,
   } = engine;
 
@@ -204,7 +212,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       socketsToEject.forEach((socket) => {
         sockets.delete(socket);
         botSockets.delete(socket);
-        socket.send(["server", { type: "room", data: false }]);
+        socket.send(["server", { type: "room", data: null }]);
       });
       rooms.delete(room.id);
     } else {
@@ -226,11 +234,11 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     });
   }
 
-  function updateRoomState(
+  function updateThroughReducer(
     room: Room,
     socket: ServerSocket,
     action: ET["actions"]
-  ) {
+  ): void {
     if (!room.state) {
       if (socket) {
         socket.send([
@@ -241,29 +249,35 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
       return;
     }
 
-    let res: ET["states"] | ET["msgs"];
-    let seatIndex = room.seats.indexOf(socket);
-    res = reducer(room.state, action, seatIndex, room.seats.length);
+    let nextState = reducer(
+      room.state,
+      { numSeats: room.seats.length },
+      { action, seatIndex: room.seats.indexOf(socket) }
+    );
 
-    if (res === room.state) return;
+    if (nextState === room.state) return;
 
-    if (isState) {
-      if (isState(res)) {
-        room.state = res as ET["states"];
-        broadcastState(room);
-      } else {
-        if (socket) socket.send(["engineMsg", res as ET["msgs"]]);
-        return;
-      }
-    } else {
-      room.state = res as ET["states"];
-      broadcastState(room);
+    if (!isState(nextState)) {
+      socket.send(["engineMsg", nextState]);
+      return;
     }
+
+    room.state = nextState;
+    broadcastState(room);
+  }
+
+  function recurseThroughReducer(room: Room): void {
+    if (!room.state) return;
+    const nextState = reducer(room.state, { numSeats: room.seats.length });
+    if (nextState === room.state) return;
+    room.state = nextState;
+    broadcastState(room);
+    return recurseThroughReducer(room);
   }
 
   // API implemenation
   // -----------------
-  const onInput: Api["onInput"] = (socket, envelope) => {
+  const onInput: ServerApi<ET>["onInput"] = (socket, envelope) => {
     if (envelope[0] === "server") {
       let action = envelope[1];
       if (action.type === "join") {
@@ -323,6 +337,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
         room.state = getInitialState(room.seats.length, action.data);
 
         broadcastState(room);
+        recurseThroughReducer(room);
         return;
       }
 
@@ -334,13 +349,14 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
 
     // Engine ET["actions"]
     if (envelope[0] === "engine") {
-      updateRoomState(room, socket, envelope[1]);
+      updateThroughReducer(room, socket, envelope[1]);
+      recurseThroughReducer(room);
     }
   };
 
   serverApi = {
     onOpen: (socket) => {
-      socket.send(["server", { type: "room", data: false }]);
+      socket.send(["server", { type: "room", data: null }]);
     },
     onClose: (socket) => {
       leaveRoom(socket);

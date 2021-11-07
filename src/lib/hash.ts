@@ -19,7 +19,7 @@ export function replaceHash(status?: HashStatus) {
   window.history.replaceState(null, "", getHashString(status));
 }
 
-function getHash(): HashStatus {
+export function getHash(): HashStatus {
   let hash = window.location.hash;
   hash = hash.substr(1, hash.length);
   if (hash.length === 0) return {};
@@ -27,10 +27,4 @@ function getHash(): HashStatus {
   let maybeIndex = parseInt(potentialIndex, 10);
   let playerIndex = isNaN(maybeIndex) ? undefined : maybeIndex;
   return { id, playerIndex };
-}
-
-export function createHashEmitter(emit: (hashStatus: HashStatus) => void) {
-  emit(getHash());
-  window.onhashchange = () => emit(getHash());
-  return () => (window.onhashchange = () => undefined);
 }

@@ -1,5 +1,4 @@
-import { ViewProps } from "../wizard/types";
-import { derivePlayers, deriveBids, deriveActuals } from "./derivations";
+import type { WizardFrame } from "./types";
 
 import { Title } from "./Title";
 import { Lobby } from "./Lobby";
@@ -12,64 +11,63 @@ import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
 import { ErrorReciever } from "./ErrorReceiver";
 
-export function App(props: ViewProps) {
+export function App(frame: WizardFrame) {
+  const { state, actions, err } = frame;
+
   return (
     <>
-      <UiButtons {...props} />
-      <AppInner {...props} />
-      <ErrorReciever err={props.err} />
+      <UiButtons exit={actions.exit} scores={state ? state.scores : null} />
+      <AppStart {...frame} />
+      <ErrorReciever err={err} />
     </>
   );
 }
 
-function AppInner(props: ViewProps) {
-  let { state, room, actions } = props;
+function AppStart(frame: WizardFrame) {
+  let { state, room, err, actions } = frame;
 
-  if (state.type === "title" || !room) {
+  if (room === null) {
     return <Title join={actions.join} />;
   }
 
-  if (state.type === "end") {
-    return null;
-  }
+  const activePlayer = state ? state.activePlayer : null;
+  const players = room.seats.map((avatar, idx) => ({
+    avatar,
+    active: idx === activePlayer,
+  }));
 
-  if (state.type === "lobby") {
+  if (state === null) {
     return (
       <Lobby
-        roomCode={room.id}
+        players={players}
         isAdmin={room.seatIndex === 0}
-        players={derivePlayers(props)}
+        roomId={room.id}
         start={actions.start}
         addBot={actions.addBot}
       />
     );
   }
 
-  let { waitFor } = actions;
+  const { waitFor } = actions;
   if (state.type === "deal") waitFor(2000);
+  if (state.type === "bidEnd") waitFor(2000);
   if (state.type === "bid") waitFor(500);
-  if (state.type === "turnOver") waitFor(1000);
+  if (state.type === "turnEnd") waitFor(1000);
 
   let { isInHand, play, isValidPlay, getTableDimensions } = actions;
 
   return (
     <DragSurface isInHand={isInHand} play={play} isValidPlay={isValidPlay}>
       <TableWrapper getTableDimensions={getTableDimensions}>
-        <Players
-          players={derivePlayers(props)}
-          bids={deriveBids(props)}
-          actuals={deriveActuals(props)}
-        />
-        <TableCenter {...props} />
+        <Players players={players} bids={state.bids} actuals={state.actuals} />
+        <TableCenter {...{ state, room, actions, err }} />
       </TableWrapper>
-      {"turn" in state && (
-        <PlayInfo
-          turn={state.turn}
-          trumpCard={"trumpCard" in state ? state.trumpCard : false}
-          trumpSuit={"trumpSuit" in state ? state.trumpSuit : undefined}
-        />
-      )}
-      <Cards {...props} />
+      <PlayInfo
+        turn={state.turn}
+        trumpCard={state.trumpCard}
+        trumpSuit={state.trumpSuit}
+      />
+      <Cards {...{ state, room, actions, err }} />
     </DragSurface>
   );
 }

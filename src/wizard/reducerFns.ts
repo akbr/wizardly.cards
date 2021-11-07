@@ -1,20 +1,25 @@
 import type {
-  // Meta
-  Msgs,
+  // Msgs
+  Err,
   // States
   Core,
+  Deal,
   Seed,
   SelectTrump,
   Bid,
+  BidEnd,
   Play,
-  End,
+  TrickEnd,
+  GameEnd,
   // Actions
   SelectTrumpAction,
   BidAction,
   PlayAction,
+  TurnEnd,
 } from "./types";
 
 import { rotateIndex } from "../lib/array";
+
 import {
   getDealtCards,
   getWinningIndex,
@@ -22,50 +27,55 @@ import {
   isValidBid,
 } from "./logic";
 
-export const err = (data: string): Msgs => ({
+export const err = (data: string): Err => ({
   type: "err",
   data,
 });
 
-export const toNextTurn = (s: Seed | Play): SelectTrump | Bid => {
-  const turn = "turn" in s ? s.turn + 1 : 1;
+export const toDeal = (s: Seed | TurnEnd): Deal => {
   const dealer = "dealer" in s ? rotateIndex(s.numPlayers, s.dealer) : 0;
-
-  const { hands, trumpCard, trumpSuit } = getDealtCards(s.numPlayers, turn);
-
-  const trumpCardIsWizard = trumpSuit === "w";
-
   return {
-    type: trumpCardIsWizard ? "selectTrump" : "bid",
-    turn,
+    type: "deal",
+    turn: "turn" in s ? s.turn + 1 : 1,
     dealer,
-    hands,
-    trumpCard,
-    trumpSuit,
-    trick: {
-      cards: [],
-      leader: rotateIndex(s.numPlayers, dealer),
-    },
-    bids: Array.from({ length: s.numPlayers }, () => false) as Core["bids"],
+    activePlayer: null,
+    hands: Array.from({ length: s.numPlayers }, () => []),
+    trumpCard: null,
+    trumpSuit: null,
+    trick: [],
+    trickLeader: rotateIndex(s.numPlayers, dealer),
+    trickWinner: null,
+    bids: Array.from({ length: s.numPlayers }, () => null) as Core["bids"],
     actuals: Array.from({ length: s.numPlayers }, () => 0),
-    activePlayer: trumpCardIsWizard
-      ? dealer
-      : rotateIndex(s.numPlayers, dealer),
     scores:
       "scores" in s ? ([...s.scores, s.bids, s.actuals] as Core["scores"]) : [],
     // Carry over
     options: s.options,
     numPlayers: s.numPlayers,
-    prevTrick: "prevTrick" in s ? s.prevTrick : undefined,
+  };
+};
+
+export const onDeal = (s: Deal): SelectTrump | Bid => {
+  const { hands, trumpCard, trumpSuit } = getDealtCards(s.numPlayers, s.turn);
+  const trumpCardIsWizard = trumpSuit === "w";
+
+  return {
+    ...s,
+    type: trumpCardIsWizard ? "selectTrump" : "bid",
+    activePlayer: trumpCardIsWizard
+      ? s.dealer
+      : rotateIndex(s.numPlayers, s.dealer),
+    hands,
+    trumpCard,
+    trumpSuit,
   };
 };
 
 export const onSelectTrump = (
   s: SelectTrump,
   suit: SelectTrumpAction["data"]
-): Bid | Msgs => {
-  const isValidSuit = ["c", "d", "h", "s"].indexOf(suit) !== -1;
-
+): Bid | Err => {
+  const isValidSuit = ["c", "d", "h", "s"].includes(suit);
   return isValidSuit
     ? {
         ...s,
@@ -79,7 +89,7 @@ export const onSelectTrump = (
 export const onBid = (
   s: Bid,
   bidInput: BidAction["data"]
-): Bid | Play | Msgs => {
+): Bid | BidEnd | Err => {
   if (!Number.isInteger(bidInput)) {
     return err("Bid must be an integer.");
   }
@@ -87,7 +97,6 @@ export const onBid = (
   if (
     !isValidBid(bidInput, {
       canadian: s.options.canadian,
-      numPlayers: s.numPlayers,
       bids: s.bids,
       turn: s.turn,
     })
@@ -96,47 +105,56 @@ export const onBid = (
   }
 
   let bids = s.bids.map((bid, i) => (i === s.activePlayer ? bidInput : bid));
-  let bidsRemain = bids.includes(false);
+  let bidsRemain = bids.includes(null);
+
+  if (bidsRemain) {
+    return {
+      ...s,
+      type: "bid",
+      bids,
+      activePlayer: rotateIndex(s.numPlayers, s.activePlayer),
+    };
+  }
 
   return {
     ...s,
-    type: bidsRemain ? "bid" : "play",
+    type: "bidEnd",
     bids,
-    activePlayer: bidsRemain
-      ? rotateIndex(s.numPlayers, s.activePlayer)
-      : rotateIndex(s.numPlayers, s.dealer),
+    activePlayer: null,
   };
 };
 
+export const onBidEnd = (s: BidEnd): Play => ({
+  ...s,
+  type: "play",
+  activePlayer: rotateIndex(s.numPlayers, s.dealer),
+});
+
 export const onPlay = (
-  s: Bid | Play,
+  s: Play,
   cardId: PlayAction["data"]
-): Play | SelectTrump | Bid | End | Msgs => {
+): Play | TrickEnd | Err => {
   const cardIsInHand = s.hands[s.activePlayer].includes(cardId);
   if (!cardIsInHand)
     return err("You don't have that card! (Are you trying to cheat?).");
 
   const cardIsPlayable = getPlayableCards(
     s.hands[s.activePlayer],
-    s.trick.cards
+    s.trick
   ).includes(cardId);
   if (!cardIsPlayable)
     return err("You must follow suit (or play a Wizard or Jester).");
 
-  const nextTrickCards = [...s.trick.cards, cardId];
-
-  const nextTrick = {
-    ...s.trick,
-    cards: nextTrickCards,
-  };
+  const nextTrick = [...s.trick, cardId];
 
   const nextHands = s.hands.map((hand, i) => {
     if (i !== s.activePlayer) return hand;
     return hand.filter((card) => card !== cardId);
   });
 
-  const TrickContinues = nextTrickCards.length !== s.numPlayers;
-  if (TrickContinues) {
+  const trickContinues = nextTrick.length !== s.numPlayers;
+
+  if (trickContinues) {
     return {
       ...s,
       activePlayer: rotateIndex(s.numPlayers, s.activePlayer),
@@ -145,41 +163,59 @@ export const onPlay = (
     };
   }
 
-  const winningTrickIndex = getWinningIndex(nextTrickCards, s.trumpSuit);
-  const winner = rotateIndex(s.numPlayers, winningTrickIndex, s.trick.leader);
+  const winningTrickIndex = getWinningIndex(nextTrick, s.trumpSuit);
+
+  return {
+    ...s,
+    type: "trickEnd",
+    activePlayer: null,
+    hands: nextHands,
+    trick: nextTrick,
+    trickWinner: rotateIndex(s.numPlayers, winningTrickIndex, s.trickLeader),
+  };
+};
+
+export const onTrickEnd = (s: TrickEnd): Play | TurnEnd => {
+  const turnIsOver = s.hands[0].length === 0;
 
   const actuals = s.actuals.map((actual, i) =>
-    i === winner ? actual + 1 : actual
+    i === s.trickWinner ? actual + 1 : actual
   );
-  const scores = [...s.scores, s.bids, actuals] as Core["scores"];
-
-  const turnIsOver = nextHands[0].length === 0;
-  const gameIsOver = turnIsOver && s.turn * s.numPlayers === 60;
-
-  if (gameIsOver) {
-    return { type: "end", scores };
-  }
-
-  const prevTrick = {
-    ...nextTrick,
-    winner,
-  };
 
   return turnIsOver
-    ? toNextTurn({
+    ? {
         ...s,
-        prevTrick,
+        type: "turnEnd",
         actuals,
-      })
+        trick: [],
+        trickLeader: -1,
+        trickWinner: null,
+      }
     : {
         ...s,
-        activePlayer: winner,
+        type: "play",
+        activePlayer: s.trickWinner,
         actuals,
-        hands: nextHands,
-        trick: {
-          cards: [],
-          leader: winner,
-        },
-        prevTrick,
+        trick: [],
+        trickLeader: s.trickWinner,
+        trickWinner: null,
       };
+};
+
+export const onTurnEnd = (s: TurnEnd): GameEnd | Deal => {
+  const gameIsOver = s.turn * s.numPlayers === 60;
+  const scores = [...s.scores, s.bids, s.actuals] as Core["scores"];
+
+  return gameIsOver
+    ? {
+        ...s,
+        type: "gameEnd",
+        scores,
+        trick: [],
+        trickLeader: -1,
+      }
+    : toDeal({
+        ...s,
+        scores,
+      });
 };

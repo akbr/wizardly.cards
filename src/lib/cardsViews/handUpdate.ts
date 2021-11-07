@@ -29,7 +29,7 @@ export const handUpdate = (
   let positions = getHandPositions(hand, appDimensions, cardDimensions);
   let cardEls = hand.map((id) => memoizedCreate(id));
 
-  if (reset || !prev) {
+  if (!prev) {
     style(cardEls, (idx) => ({
       x: positions[idx].x,
       y: positions[idx].y + (Y_PEEK + 10),

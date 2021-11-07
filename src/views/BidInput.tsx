@@ -6,7 +6,7 @@ import { isValidBid } from "../wizard/logic";
 const Outer = styled("div")`
   display: flex;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
   gap: 16px;
 `;
 
@@ -14,7 +14,7 @@ const Console = styled("div")`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 `;
 
 const BidDisplay = styled("div")`
@@ -26,7 +26,7 @@ const BidDisplay = styled("div")`
 type BidInputProps = {
   canadian?: boolean;
   active: boolean;
-  bids: (number | false)[];
+  bids: (number | null)[];
   turn: number;
   numPlayers: number;
   submit: (bid: number) => void;
@@ -36,9 +36,8 @@ export function BidInput({
   canadian = false,
   active,
   bids,
-  numPlayers,
   turn,
-  submit
+  submit,
 }: BidInputProps) {
   const [bid, setBid] = useState(0);
 
@@ -48,27 +47,38 @@ export function BidInput({
 
   const bidIsvalid = isValidBid(bid, {
     canadian,
-    numPlayers,
     turn,
-    bids
+    bids,
   });
 
   return (
     <Outer>
-      <h2>Enter your bid:</h2>
+      <h2>Enter bid:</h2>
       <Console>
-        <Button onClick={() => setBid(bid + 1)} disabled={bid === turn}>
+        <Button
+          style={{ minWidth: "48px", minHeight: "48px" }}
+          onClick={() => setBid(bid + 1)}
+          disabled={bid === turn}
+        >
           +
         </Button>
         <BidDisplay style={{ color: bidIsvalid ? "" : "red" }}>
           {bid}
         </BidDisplay>
-        <Button onClick={() => setBid(bid - 1)} disabled={bid === 0}>
+        <Button
+          style={{ minWidth: "48px", minHeight: "48px" }}
+          onClick={() => setBid(bid - 1)}
+          disabled={bid === 0}
+        >
           -
         </Button>
       </Console>
-      <Button onClick={() => submit(bid)} disabled={!isValidBid}>
-        Submit
+      <Button
+        style={{ minWidth: "100px" }}
+        onClick={() => submit(bid)}
+        disabled={!isValidBid}
+      >
+        Bid
       </Button>
     </Outer>
   );

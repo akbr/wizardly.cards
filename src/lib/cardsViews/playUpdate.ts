@@ -12,8 +12,8 @@ import shallow from "zustand/shallow";
 
 export type PlayProps = {
   numPlayers: number;
-  seatIndex: number;
-  leadPlayer: number;
+  playerPerspective: number;
+  startPlayer: number;
   trick: string[];
   winningIndex?: number;
   cardDimensions?: Dimensions;
@@ -25,8 +25,8 @@ export const playUpdate = (
   {
     trick,
     numPlayers,
-    leadPlayer,
-    seatIndex,
+    startPlayer,
+    playerPerspective,
     tableDimensions = { w: window.innerWidth, h: window.innerHeight },
     winningIndex,
     cardDimensions = { w: 80, h: 112 },
@@ -39,7 +39,7 @@ export const playUpdate = (
   // Calculate positions
   // -------------------
   const adjustedSeatIndexes = trick.map((_, i) =>
-    rotateIndex(numPlayers, i, leadPlayer - seatIndex)
+    rotateIndex(numPlayers, i, startPlayer - playerPerspective)
   );
 
   const playedPositions = trick.map((_, i) => ({
@@ -80,7 +80,8 @@ export const playUpdate = (
   // Build
   // --------------
   let playedByUser =
-    rotateIndex(numPlayers, trick.length - 1, leadPlayer) === seatIndex;
+    rotateIndex(numPlayers, trick.length - 1, startPlayer) ===
+    playerPerspective;
 
   const timeline = [
     () => {
@@ -100,7 +101,6 @@ export const playUpdate = (
         duration: playedByUser ? 200 : randomBetween(300, 500),
       }),
   ];
-
   // Win animation
   // -------------
   if (winningIndex !== undefined) {

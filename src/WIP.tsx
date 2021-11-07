@@ -1,5 +1,5 @@
 import { setup, styled, css, keyframes } from "goober";
-import { h, render } from "preact";
+import { ComponentChildren, h, render } from "preact";
 import {
   useRef,
   Ref,
@@ -8,33 +8,35 @@ import {
   useCallback,
   useEffect,
 } from "preact/hooks";
-import { rotateArray } from "./lib/array";
+import { Badge } from "./views/Badge";
 import { DeadCenterWrapper } from "./views/common";
-import { TrumpInput } from "./views/TrumpInput";
-import { ScoreTable } from "./views/ScoreTable";
-import { DialogOf } from "./views/Dialog";
+import { Tooltip } from "./views/Tooltip";
 
 setup(h);
 
-const Container = styled("div")`
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`;
-
-const Error = styled("div")`
-  display: inline-block;
-  background-color: red;
-  padding: 6px;
-  border-radius: 4px;
-`;
-
 // -------------------------------
 
-const WIP = () => {};
+const WIP = () => {
+  return (
+    <DeadCenterWrapper>
+      <div style={{ position: "relative", backgroundColor: "purple" }}>
+        <Badge avatar={"A"} />
+        <Tooltip dir={"left"}>
+          <div>Bid: 4</div>
+        </Tooltip>
+        <Tooltip dir={"right"}>
+          <div>Bid: 4</div>
+        </Tooltip>
+        <Tooltip dir={"top"}>
+          <div>Bid: 4</div>
+        </Tooltip>
+        <Tooltip dir={"bottom"}>
+          <div>Bid: 4</div>
+        </Tooltip>
+      </div>
+    </DeadCenterWrapper>
+  );
+};
 
 // -------------------------------
 console.clear();

@@ -36,11 +36,11 @@ const TimedError = ({
   return <Error>{err.data}</Error>;
 };
 
-export const ErrorReciever = ({ err }: { err: Err | false }) => {
+export const ErrorReciever = ({ err }: { err: Err | null }) => {
   const [errors, setErrors] = useState<Err[]>([]);
 
   useEffect(() => {
-    if (err === false) return;
+    if (err === null) return;
     setErrors((errs) => [...errs, err]);
   }, [err]);
 

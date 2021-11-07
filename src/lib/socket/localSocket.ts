@@ -14,7 +14,7 @@ export function createLocalSocket<I, O>(server: Server<I, O>) {
       if (!connected) throw new Error("Local socket not connected.");
       server.onInput(serverSocket, action);
     },
-    close: () => server.onClose(serverSocket)
+    close: () => server.onClose(serverSocket),
   };
 
   serverSocket = {
@@ -24,12 +24,13 @@ export function createLocalSocket<I, O>(server: Server<I, O>) {
     close: () => {
       server.onClose(serverSocket);
       if (clientSocket.onclose) clientSocket.onclose();
-    }
+    },
   };
 
   async(() => {
     connected = true;
     if (clientSocket.onopen) clientSocket.onopen();
+    server.onOpen(serverSocket);
   });
 
   return clientSocket;

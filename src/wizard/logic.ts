@@ -71,10 +71,9 @@ export const getDealtCards = (numPlayers: number, numCards: number) => {
     })
     .map((hand) => sortHand(hand, sortOrder));
 
-  const trumpCard = deck.pop() || false;
+  const trumpCard = deck.pop() || null;
 
-  const trumpSuit =
-    typeof trumpCard === "string" ? getSuit(trumpCard) : undefined;
+  const trumpSuit = typeof trumpCard === "string" ? getSuit(trumpCard) : null;
 
   return {
     hands,
@@ -83,19 +82,19 @@ export const getDealtCards = (numPlayers: number, numCards: number) => {
   } as const;
 };
 
-const winnerWithinSuit = (cards: string[], suit: string) => {
-  const suits = cards.map(getSuit);
-  const values = cards.map(getValue);
-  const modValues = values.map((v, i) => (suits[i] === suit ? v : -1));
-  return indexOfMax(modValues);
-};
-
 const getLeadSuit = (trick: string[]) =>
   trick.map(getSuit).find((suit) => suit !== "j" && suit !== "w");
 
+const winnerWithinSuit = (trick: string[], suit: string) => {
+  const adjustedValues = trick.map((card) =>
+    getSuit(card) === suit ? getValue(card) : -1
+  );
+  return indexOfMax(adjustedValues);
+};
+
 export const getWinningIndex = (
   trick: string[],
-  trumpSuit: string | undefined
+  trumpSuit: string | null | undefined
 ) => {
   const suits = trick.map(getSuit);
 
@@ -111,7 +110,7 @@ export const getWinningIndex = (
   const leadSuit = getLeadSuit(trick);
   if (leadSuit) return winnerWithinSuit(trick, leadSuit);
 
-  // All jesters; lead card wins
+  // Lead card wins (must be all jesters!)
   return 0;
 };
 
@@ -121,11 +120,11 @@ export const getPlayableCards = (hand: string[], trick: string[]) => {
   const leadSuit = getLeadSuit(trick);
   if (!leadSuit) return hand;
 
-  const suits = hand.map(getSuit);
-  if (!suits.includes(leadSuit)) return hand;
+  const handSuits = hand.map(getSuit);
+  if (!handSuits.includes(leadSuit)) return hand;
 
-  const playableSuits = [leadSuit, "w", "j"];
-  return hand.filter((_, i) => playableSuits.includes(suits[i]));
+  const playableSuits = new Set([leadSuit, "w", "j"]);
+  return hand.filter((_, i) => playableSuits.has(handSuits[i]));
 };
 
 export const isValidBid = (
@@ -133,12 +132,10 @@ export const isValidBid = (
   {
     canadian = false,
     bids,
-    numPlayers,
     turn,
   }: {
     canadian?: boolean;
-    bids: (number | false)[];
-    numPlayers: number;
+    bids: (number | null)[];
     turn: number;
   }
 ) => {
@@ -147,13 +144,13 @@ export const isValidBid = (
 
   if (!canadian) return true;
 
-  const isLastBid = numPlayers === bids.length + 1;
+  const isLastBid = bids.filter((bid) => bid === null).length === 1;
   if (!isLastBid) return true;
 
   const totalBids =
     bid +
     bids
-      .map((x) => (x === false ? 0 : x))
+      .map((thisBid) => (thisBid === null ? 0 : thisBid))
       .reduce((total, thisBid) => total + thisBid, 0);
 
   return totalBids !== turn;

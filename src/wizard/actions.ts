@@ -1,14 +1,14 @@
-import { WizardShape } from "./types";
-import { engine } from "./";
-import { AppInterfaces } from "../lib/appInterfaces/types";
+import { WizardShape } from "../wizard/types";
+import { AppHarness } from "../lib/appHarness/types";
+
+import { engine } from "../wizard";
 import { getHandHeight } from "../lib/cardsViews/handUpdate.calc";
-import { deriveHand } from "../views/derivations";
 
 export const createActions = ({
   store,
   manager,
   meter,
-}: AppInterfaces<WizardShape>) => {
+}: AppHarness<WizardShape>) => {
   const { send } = manager;
   const { getState, setState } = store;
   const { waitFor } = meter;
@@ -24,16 +24,21 @@ export const createActions = ({
     selectTrump: (suit: string) =>
       send(["engine", { type: "selectTrump", data: suit }]),
     play: (cardId: string) => send(["engine", { type: "play", data: cardId }]),
-    isInHand: (cardId = "") => deriveHand(getState()).includes(cardId),
+    isInHand: (cardId = "") => {
+      let { room, state } = getState();
+      if (!room || !state) return false;
+      return state.hands[room.seatIndex].includes(cardId);
+    },
     isValidPlay: (cardId: string) => {
       let { state, room } = getState();
-      if (!room || !engine.isState(state)) return false;
+      if (!room || !state || !engine.isState(state)) return false;
       let nextState = engine.reducer(
-        //@ts-ignore (has passed isState)
         state,
-        { type: "play", data: cardId },
-        room.seatIndex,
-        room.seats.length
+        { numSeats: room.seats.length },
+        {
+          action: { type: "play", data: cardId },
+          seatIndex: room.seatIndex,
+        }
       );
       if (nextState.type === "err") {
         setState({ err: nextState });
@@ -43,7 +48,8 @@ export const createActions = ({
       }
     },
     getTableDimensions: () => {
-      let hand = deriveHand(getState());
+      let { room, state } = getState();
+      let hand = room && state ? state.hands[room.seatIndex] : [];
       let screen = {
         w: window.innerWidth > 700 ? 700 : window.innerWidth,
         h: window.innerHeight,
@@ -57,7 +63,6 @@ export const createActions = ({
     },
     exit: () => {
       manager.openSocket();
-      meter.push({ type: "title" });
     },
     waitFor,
   };

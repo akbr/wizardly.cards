@@ -1,33 +1,33 @@
-import { ViewProps } from "../wizard/types";
+import { WizardGameFrame } from "./types";
 
 import { Hand, Play } from "../lib/cardsViews/preactInterfaces";
 import { rotateIndex } from "../lib/array";
 
-export function Cards({ state, actions, room }: ViewProps) {
-  if (!room) return null;
-
+export function Cards({ state, room, actions }: WizardGameFrame) {
   return (
     <>
       {"trick" in state && (
         <Play
           {...{
             getTableDimensions: actions.getTableDimensions,
-            trick: state.trick.cards,
+            trick: state.trick,
             numPlayers: state.numPlayers,
-            seatIndex: room.seatIndex,
-            leadPlayer: state.trick.leader,
+            playerPerspective: room.seatIndex,
+            startPlayer: state.trickLeader,
             winningIndex:
-              state.type === "trickWin"
+              state.type === "trickEnd"
                 ? rotateIndex(
                     state.numPlayers,
-                    state.winner,
-                    -state.trick.leader
+                    state.trickWinner,
+                    -state.trickLeader
                   )
                 : undefined,
           }}
         />
       )}
-      {"hands" in state && <Hand hand={state.hands[room.seatIndex]} />}
+      {state.hands[room.seatIndex].length > 0 && (
+        <Hand hand={state.hands[room.seatIndex]} />
+      )}
     </>
   );
 }

@@ -1,13 +1,13 @@
+import { WizardFrame } from "./types";
+
 import { css } from "goober";
 import { Fragment } from "preact";
 import { useState, useCallback } from "preact/hooks";
 import { a, topMargins } from "./commonCss";
 import { EmojiButton, Button } from "./common";
 
-import { ViewProps } from "../wizard/types";
 import { DialogOf } from "./Dialog";
 import { ScoreTable } from "./ScoreTable";
-import { derivePlayers } from "./derivations";
 
 let flex = css`
   display: flex;
@@ -43,14 +43,12 @@ const Options = ({ exit }: { exit: () => void }) => {
   );
 };
 
-type TableButtonProps = {
+type UiButtonsProps = {
   exit: () => void;
-  scores?: number[][];
-  avatars?: string[];
-  playerIndex?: number;
+  scores: number[][] | null;
 };
 
-export const UiButtons = (props: ViewProps) => {
+export const UiButtons = ({ exit, scores }: UiButtonsProps) => {
   const [optionsVisible, setOptions] = useState(false);
   const [scoresVisible, setScores] = useState(false);
 
@@ -59,15 +57,10 @@ export const UiButtons = (props: ViewProps) => {
 
   const openScores = useCallback(() => setScores(true), []);
   const closeScores = useCallback(() => setScores(false), []);
-  const exit = useCallback(() => {
+  const doExit = useCallback(() => {
     closeOptions();
-    props.actions.exit();
+    exit();
   }, []);
-
-  let { state, room, actions } = props;
-  let scores = "scores" in state ? state.scores : false;
-  let players = derivePlayers(props);
-  let playerIndex = room ? room.seatIndex : -1;
 
   return (
     <Fragment>
@@ -76,21 +69,22 @@ export const UiButtons = (props: ViewProps) => {
         {scores && <ScoresButton open={openScores} />}
       </div>
       <DialogOf close={closeOptions} visible={optionsVisible}>
-        <Options exit={exit} />
+        <Options exit={doExit} />
       </DialogOf>
-      {scores && (
-        <DialogOf close={closeScores} visible={scoresVisible}>
-          {scoresVisible && (
-            <div style={{ display: "grid", placeContent: "center" }}>
-              <ScoreTable
-                scores={scores}
-                avatars={players.map((player) => player.avatar)}
-                playerIndex={playerIndex}
-              />
-            </div>
-          )}
-        </DialogOf>
-      )}
     </Fragment>
   );
 };
+
+/**
+ *       <DialogOf close={closeScores} visible={scoresVisible}>
+        {scoresVisible && (
+          <div style={{ display: "grid", placeContent: "center" }}>
+            <ScoreTable
+              scores={scores}
+              avatars={players.map((player) => player.avatar)}
+              playerIndex={playerIndex}
+            />
+          </div>
+        )}
+      </DialogOf>
+ */

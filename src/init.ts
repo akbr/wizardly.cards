@@ -2,29 +2,35 @@ import { setup } from "goober";
 import { h } from "preact";
 import { render } from "./lib/premix";
 
-import { App } from "./views/App";
+import { createServer } from "./lib/server";
+
 import { engine } from "./wizard";
-import { initRemote, initLocal } from "./lib/appInterfaces";
+import { createHarness } from "./lib/appHarness";
 import { createActions } from "./wizard/actions";
-import { getUiStates } from "./wizard/getUiStates";
+
+import { App } from "./views/App";
 
 export function init() {
   setup(h);
 
   const isDev = location.port === "1234";
-  const appInterfaces = isDev
-    ? initLocal(engine, getUiStates)
-    : initRemote(location.origin.replace(/^http/, "ws"), getUiStates);
+  const server = isDev
+    ? createServer(engine)
+    : location.origin.replace(/^http/, "ws");
 
-  const { store, meter } = appInterfaces;
-  const actions = createActions(appInterfaces);
+  const harness = createHarness(server);
+  const actions = createActions(harness);
+
+  let { store, meter, manager } = harness;
 
   const $appRoot = document.getElementById("app")!;
-  store.subscribe((x) => {
-    render(h(App, { ...x, actions }), $appRoot, meter.waitFor);
+
+  store.subscribe((frame) => {
+    console.log(frame);
+    render(h(App, { ...frame, actions }), $appRoot, meter.waitFor);
   });
 
-  store.setState({ state: { type: "title" } });
+  manager.openSocket();
 
-  return { ...appInterfaces, actions };
+  return { ...harness, actions };
 }

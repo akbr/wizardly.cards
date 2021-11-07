@@ -1,3 +1,5 @@
+import { Player } from "./types";
+
 import { styled, keyframes } from "goober";
 import { Fieldset, Container, Button } from "./common";
 import { Badge } from "./Badge";
@@ -19,25 +21,12 @@ const Link = styled("div")`
   }
 `;
 
-type LobbyProps = {
-  players: {
-    avatar: string;
-    active: boolean;
-  }[];
-  roomCode: string;
-  isAdmin: boolean;
-  start: () => void;
-  addBot?: () => void;
-};
-
 const fadeIn = keyframes`
   from {
-    transform: scale(0.5);
     opacity: 0;
   }
 
   to {
-    transform: scale(1);
     opacity: 1;
   }
 `;
@@ -46,14 +35,22 @@ const Fader = styled("div")`
   animation: ${fadeIn} 0.5s both;
 `;
 
+type LobbyProps = {
+  players: Player[];
+  roomId: string;
+  isAdmin: boolean;
+  start: () => void;
+  addBot?: () => void;
+};
+
 export const Lobby = ({
   players,
-  roomCode,
   isAdmin,
+  roomId,
   start,
   addBot,
 }: LobbyProps) => {
-  const url = window.location.host + "/#" + roomCode;
+  const url = window.location.host + "/#" + roomId;
 
   return (
     <Container>
@@ -75,13 +72,14 @@ export const Lobby = ({
           </Fader>
         ))}
       </PlayerBox>
-      {isAdmin && (
+      {isAdmin ? (
         <>
           {addBot && <Button onClick={addBot}>Add bot</Button>}
           <Button onClick={start}>Start</Button>
         </>
+      ) : (
+        <div>Waiting for game start ...</div>
       )}
-      {!isAdmin && <div>Waiting for game start ...</div>}
     </Container>
   );
 };

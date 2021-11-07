@@ -24,7 +24,7 @@ export const createBot: WizardEngine["createBot"] =
     if (state.type === "play") {
       let playableCards = getPlayableCards(
         state.hands[playerIndex],
-        state.trick.cards
+        state.trick
       );
       send({ type: "play", data: randomFromArray(playableCards) });
     }

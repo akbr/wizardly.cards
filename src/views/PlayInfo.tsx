@@ -18,8 +18,8 @@ let Icon = styled("svg")`
 
 type PlayInfoProps = {
   turn: number;
-  trumpCard: string | false;
-  trumpSuit?: string;
+  trumpCard: string | null;
+  trumpSuit: string | null;
 };
 
 export const PlayInfo = ({ turn, trumpCard, trumpSuit }: PlayInfoProps) => {
