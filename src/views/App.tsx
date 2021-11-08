@@ -2,14 +2,18 @@ import type { WizardFrame } from "./types";
 
 import { Title } from "./Title";
 import { Lobby } from "./Lobby";
-import { DragSurface } from "../lib/cardsViews/preactInterfaces";
+import {
+  CardsHand,
+  CardsPlay,
+  DragSurface,
+} from "../lib/cardsViews/preactInterfaces";
 import { TableWrapper } from "./TableWrapper";
 import { TableCenter } from "./TableCenter";
-import { Cards } from "./Cards";
 import { Players } from "./Players";
 import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
 import { ErrorReciever } from "./ErrorReceiver";
+import { rotateArray, rotateIndex } from "../lib/array";
 
 export function App(frame: WizardFrame) {
   const { state, actions, err } = frame;
@@ -17,13 +21,13 @@ export function App(frame: WizardFrame) {
   return (
     <>
       <UiButtons exit={actions.exit} scores={state ? state.scores : null} />
-      <AppStart {...frame} />
+      <AppInner {...frame} />
       <ErrorReciever err={err} />
     </>
   );
 }
 
-function AppStart(frame: WizardFrame) {
+function AppInner(frame: WizardFrame) {
   let { state, room, err, actions } = frame;
 
   if (room === null) {
@@ -48,26 +52,61 @@ function AppStart(frame: WizardFrame) {
     );
   }
 
+  // Game modes
+
   const { waitFor } = actions;
   if (state.type === "deal") waitFor(2000);
   if (state.type === "bidEnd") waitFor(2000);
   if (state.type === "bid") waitFor(500);
-  if (state.type === "turnEnd") waitFor(1000);
+  if (state.type === "turnEnd") waitFor(2000);
 
-  let { isInHand, play, isValidPlay, getTableDimensions } = actions;
+  const { isInHand, play, isValidPlay, getTableDimensions } = actions;
+  const { seatIndex } = room;
+  const {
+    type,
+    numPlayers,
+    turn,
+    bids,
+    actuals,
+    trick,
+    trickLeader,
+    trumpCard,
+    trumpSuit,
+    hands,
+  } = state;
+
+  const winningIndex =
+    state.type === "trickEnd"
+      ? rotateIndex(state.numPlayers, state.trickWinner, -state.trickLeader)
+      : undefined;
+  const hand = hands[0];
 
   return (
-    <DragSurface isInHand={isInHand} play={play} isValidPlay={isValidPlay}>
-      <TableWrapper getTableDimensions={getTableDimensions}>
-        <Players players={players} bids={state.bids} actuals={state.actuals} />
+    <DragSurface {...{ isInHand, isValidPlay, play }}>
+      <TableWrapper {...{ getTableDimensions }}>
+        <Players
+          {...{
+            showBids: type === "bid" || type === "bidEnd",
+            players: rotateArray(players, -seatIndex),
+            bids: rotateArray(bids, -seatIndex),
+            actuals: rotateArray(actuals, -seatIndex),
+            trickLeader: rotateIndex(numPlayers, trickLeader, -seatIndex),
+          }}
+        />
         <TableCenter {...{ state, room, actions, err }} />
       </TableWrapper>
-      <PlayInfo
-        turn={state.turn}
-        trumpCard={state.trumpCard}
-        trumpSuit={state.trumpSuit}
+      <PlayInfo {...{ bids, turn, trumpCard, trumpSuit }} />
+      <CardsPlay
+        {...{
+          getTableDimensions,
+          trick,
+          numPlayers,
+          playerPerspective: seatIndex,
+          startPlayer: trickLeader,
+          winningIndex,
+        }}
       />
-      <Cards {...{ state, room, actions, err }} />
+      {hand.length > 0 && <CardsHand hand={hand} />}
     </DragSurface>
   );
 }

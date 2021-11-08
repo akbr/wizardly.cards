@@ -1,7 +1,7 @@
-import { WizardShape } from "../wizard/types";
+import { WizardShape } from "./types";
 import { AppHarness } from "../lib/appHarness/types";
 
-import { engine } from "../wizard";
+import { engine } from ".";
 import { getHandHeight } from "../lib/cardsViews/handUpdate.calc";
 
 export const createActions = ({
@@ -62,6 +62,7 @@ export const createActions = ({
       };
     },
     exit: () => {
+      store.setState({ state: null });
       manager.openSocket();
     },
     waitFor,

@@ -103,7 +103,8 @@ export const getWinningIndex = (
   if (firstWizardIndex !== -1) return firstWizardIndex;
 
   // Highest trump wins
-  const trumpSuitPlayed = trumpSuit && suits.includes(trumpSuit);
+  const trumpSuitPlayed =
+    trumpSuit && !["w", "j"].includes(trumpSuit) && suits.includes(trumpSuit);
   if (trumpSuitPlayed) return winnerWithinSuit(trick, trumpSuit);
 
   // Highest of led suit wins

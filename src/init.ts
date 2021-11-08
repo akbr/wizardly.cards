@@ -6,6 +6,7 @@ import { createServer } from "./lib/server";
 
 import { engine } from "./wizard";
 import { createHarness } from "./lib/appHarness";
+import { listenToHash } from "./lib/appHarness/listenToHash";
 import { createActions } from "./wizard/actions";
 
 import { App } from "./views/App";
@@ -26,11 +27,12 @@ export function init() {
   const $appRoot = document.getElementById("app")!;
 
   store.subscribe((frame) => {
-    console.log(frame);
     render(h(App, { ...frame, actions }), $appRoot, meter.waitFor);
   });
 
   manager.openSocket();
+
+  listenToHash(harness);
 
   return { ...harness, actions };
 }

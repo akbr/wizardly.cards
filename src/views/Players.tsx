@@ -3,14 +3,13 @@ import { Player } from "./types";
 import { Badge } from "./Badge";
 import { seatRatios } from "../lib/cardsViews/layout";
 import { css, styled, keyframes } from "goober";
-import { Fragment } from "preact";
 
 import { Tooltip } from "./Tooltip";
 
 const vecToDir = ({ x, y }: { x: number; y: number }) => {
   if (x === 0 && y > 0) return "right";
   if (x === 1 && y > 0) return "left";
-  if (y === 0 && x > 1) return "top";
+  if (y === 1 && x > 0) return "top";
   return "bottom";
 };
 
@@ -47,40 +46,56 @@ const fadeIn = keyframes`
 `;
 
 type PlayersProps = {
+  showBids: boolean;
   players: Player[];
   bids: (number | null)[];
   actuals: number[];
+  trickLeader: number;
 };
 
-export const Players = ({ players, bids, actuals }: PlayersProps) => {
+export const Players = ({
+  players,
+  bids,
+  actuals,
+  showBids,
+  trickLeader,
+}: PlayersProps) => {
   const positions = seatRatios[players.length - 1];
 
-  const displays = players.map((player, idx) => {
+  const playerNodes = players.map(({ avatar, active }, idx) => {
     const { x, y } = positions[idx][0];
-    const { avatar, active } = player;
-
-    const hasBid = bids[idx] !== null;
-    const bidsComplete = bids.indexOf(null) === -1;
-
-    const content =
-      hasBid && !bidsComplete ? (
-        <Tooltip
-          style={{ animation: `${fadeIn} 1s both` }}
-          dir={vecToDir({ x, y })}
-        >{`Bid: ${bids[idx]}`}</Tooltip>
-      ) : hasBid && bidsComplete ? (
-        <InfoPosition
-          style={{ top: "100%" }}
-        >{`${actuals[idx]} / ${bids[idx]}`}</InfoPosition>
-      ) : undefined;
-
     return (
-      <div class={`${a} ${insideParentEdge(x, y)}`}>
-        <Badge color={"blue"} avatar={avatar} active={active} />
-        {content}
+      <div class={`${a} ${insideParentEdge(x, y)}`} key={idx}>
+        <Badge avatar={avatar} active={active} />
+        {bids[idx] !== null ? (
+          showBids ? (
+            <Tooltip
+              style={{ animation: `${fadeIn} 1s both` }}
+              dir={vecToDir({ x, y })}
+            >
+              {`Bid: ${bids[idx]}`}
+            </Tooltip>
+          ) : (
+            <InfoPosition style={{ top: "100%" }}>
+              {`${actuals[idx]} / ${bids[idx]}`}
+            </InfoPosition>
+          )
+        ) : null}
+        {trickLeader === idx && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "2px",
+              left: "2px",
+              fontSize: "20px",
+            }}
+          >
+            ☝
+          </div>
+        )}
       </div>
     );
   });
 
-  return <Fragment>{displays}</Fragment>;
+  return <>{playerNodes}</>;
 };

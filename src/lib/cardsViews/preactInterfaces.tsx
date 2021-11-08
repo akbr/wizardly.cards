@@ -10,7 +10,7 @@ type CardUpdateProps<T extends (...args: any) => any> = Omit<
   "tableDimensions" | "appDimensions"
 >;
 
-export const Play = ({
+export const CardsPlay = ({
   getTableDimensions,
   ...rest
 }: CardUpdateProps<typeof playUpdate> & {
@@ -27,17 +27,17 @@ export const Play = ({
 
 const getAppDimensions = () => ({
   w: window.innerWidth > 700 ? 700 : window.innerWidth,
-  h: window.innerHeight
+  h: window.innerHeight,
 });
 
-export const Hand = (props: CardUpdateProps<typeof handUpdate>) => {
+export const CardsHand = (props: CardUpdateProps<typeof handUpdate>) => {
   let appDimensions = useOnResize(getAppDimensions);
   return (
     <WithUpdate fn={handUpdate} props={{ ...props, appDimensions }}>
       <div
         id="hand"
         style={{
-          position: "absolute"
+          position: "absolute",
         }}
       />
     </WithUpdate>
@@ -55,7 +55,7 @@ export const DragSurface = ({
   isInHand,
   play,
   isValidPlay,
-  children
+  children,
 }: DragSurfaceProps) => {
   return (
     <WithUpdate fn={dragUpdater} props={{ isInHand, play, isValidPlay }}>

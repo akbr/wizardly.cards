@@ -64,9 +64,14 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     return id ? rooms.get(id) : false;
   }
 
+  const avatars = ["🐵", "🐸", "🦊", "🐷", "🐭", "🐼"];
+  const botAvatar = "🤖";
+
   function broadcastRoomUpdate(room: Room) {
     let { id } = room;
-    let seats = room.seats.map((_, idx) => String(idx));
+    let seats = room.seats.map((socket, idx) =>
+      socket && botSockets.has(socket) ? botAvatar : avatars[idx]
+    );
     let spectators = room.spectators.length;
 
     [...room.seats, ...room.spectators].forEach((socket) => {
@@ -224,7 +229,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     }
   }
 
-  function broadcastState(room: Room) {
+  function broadcastStateUpdate(room: Room) {
     room.seats.forEach((socket, seatIndex) => {
       if (socket && room.state)
         socket.send([
@@ -263,7 +268,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     }
 
     room.state = nextState;
-    broadcastState(room);
+    broadcastStateUpdate(room);
   }
 
   function recurseThroughReducer(room: Room): void {
@@ -271,7 +276,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     const nextState = reducer(room.state, { numSeats: room.seats.length });
     if (nextState === room.state) return;
     room.state = nextState;
-    broadcastState(room);
+    broadcastStateUpdate(room);
     return recurseThroughReducer(room);
   }
 
@@ -336,7 +341,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
 
         room.state = getInitialState(room.seats.length, action.data);
 
-        broadcastState(room);
+        broadcastStateUpdate(room);
         recurseThroughReducer(room);
         return;
       }

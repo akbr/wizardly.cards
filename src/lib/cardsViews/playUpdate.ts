@@ -101,53 +101,48 @@ export const playUpdate = (
         duration: playedByUser ? 200 : randomBetween(300, 500),
       }),
   ];
+
+  if (winningIndex === undefined) return seq(timeline);
+
   // Win animation
   // -------------
-  if (winningIndex !== undefined) {
-    const waggleFrames = (amt: number, amt2: number) => {
-      const getAmt = () => randomBetween(amt, amt2);
-      return [0, getAmt(), 0, -getAmt(), 0, getAmt(), -getAmt() / 4].map(
-        (r) => ({
-          r,
-        })
-      );
-    };
+  const waggleFrames = (amt: number, amt2: number) => {
+    const getAmt = () => randomBetween(amt, amt2);
+    return [0, getAmt(), 0, -getAmt(), 0, getAmt(), -getAmt() / 4].map((r) => ({
+      r,
+    }));
+  };
 
-    let $winningCard = $trick[winningIndex];
-    let $losingCards = $trick.filter((el) => el !== $winningCard);
+  let $winningCard = $trick[winningIndex];
+  let $losingCards = $trick.filter((el) => el !== $winningCard);
 
-    $root.appendChild($winningCard);
+  $root.appendChild($winningCard);
 
-    timeline.push(
-      () => {
-        // Waggle winning card
-        style($winningCard, waggleFrames(10, 20), {
-          duration: 750,
-          delay: 500,
-        });
-        // Coalesce losing cards
-        style(
-          $losingCards,
-          {
-            ...playedPositions[winningIndex],
-            r: () => randomBetween(-20, 20),
-          },
-          { duration: 300, delay: 1350 }
-        );
-        // Pull in trick
-        return style(
-          $trick,
-          {
-            ...heldPositions[winningIndex],
-            r: 45,
-          },
-          { duration: 350, delay: 1700 }
-        );
+  timeline.push(() => {
+    // Waggle winning card
+    style($winningCard, waggleFrames(10, 20), {
+      duration: 750,
+      delay: 500,
+    });
+    // Coalesce losing cards
+    style(
+      $losingCards,
+      {
+        ...playedPositions[winningIndex],
+        r: () => randomBetween(-20, 20),
       },
-      // just a breather for the user
-      () => 300
+      { duration: 300, delay: 1350 }
     );
-  }
+    // Pull in trick
+    return style(
+      $trick,
+      {
+        ...heldPositions[winningIndex],
+        r: 45,
+      },
+      { duration: 350, delay: 1700 }
+    );
+  });
 
   return seq(timeline);
 };
