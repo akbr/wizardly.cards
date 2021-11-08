@@ -1,4 +1,3 @@
-//@ts-nocheck
 import * as express from "express";
 import * as path from "path";
 
@@ -10,8 +9,10 @@ const PORT = process.env.PORT || 5000;
 const distPath = path.resolve("dist/");
 
 mountRoomServer(
+  //@ts-ignore
   express()
     .use(express.static(distPath))
+    //@ts-ignore
     .get("/", function (_, res) {
       res.sendFile("index.html", { root: distPath });
     })

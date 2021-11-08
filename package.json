@@ -3,8 +3,9 @@
   "source": "./src/index.html",
   "scripts": {
     "dev": "parcel",
-    "build": "parcel build && tsc ./src/server.ts --outDir dist",
-    "start": "node ./dist/server.js"
+    "build": "parcel build && tsc ./src/server.ts --outDir  dist",
+    "start": "node ./dist/server.js",
+    "whot": "tsc ./src/wizard/test.ts --outDir dist"
   },
   "dependencies": {
     "express": "^4.17.1",

@@ -38,7 +38,6 @@ export type Core = {
 };
 
 type Active = { activePlayer: number };
-type Inactive = { activePlayer: null };
 
 /**
  * States
@@ -46,15 +45,14 @@ type Inactive = { activePlayer: null };
 
 export type Err = { type: "err"; data: string };
 
-export type Deal = { type: "deal" } & Core & Inactive;
+export type Deal = { type: "deal" } & Core;
 export type SelectTrump = { type: "selectTrump" } & Core & Active;
 export type Bid = { type: "bid" } & Core & Active;
-export type BidEnd = { type: "bidEnd" } & Core & Inactive;
+export type BidEnd = { type: "bidEnd" } & Core;
 export type Play = { type: "play" } & Core & Active;
-export type TrickEnd = { type: "trickEnd" } & Core &
-  Inactive & { trickWinner: number };
-export type TurnEnd = { type: "turnEnd" } & Core & Inactive;
-export type GameEnd = { type: "gameEnd" } & Core & Inactive;
+export type TrickEnd = { type: "trickEnd" } & Core & { trickWinner: number };
+export type TurnEnd = { type: "turnEnd" } & Core;
+export type GameEnd = { type: "gameEnd" } & Core;
 
 export type Seed = {
   numPlayers: number;
