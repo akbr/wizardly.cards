@@ -2,10 +2,13 @@ import "./styles.css";
 
 import { init } from "./init";
 
-window.location.hash = "#";
-
 let { store, server, actions } = init();
 
+/**
+import W from "./WIP";
+W;
+
+window.location.hash = "#";
 //@ts-ignore
 window.server = server;
 if (typeof server !== "string" && server.format) {
@@ -20,10 +23,6 @@ actions.addBot();
 actions.addBot();
 actions.addBot();
 actions.addBot();
-
-/**
-import W from "./WIP";
-W;
 
 
  */
