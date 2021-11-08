@@ -22,13 +22,7 @@ type BadgeProps = {
   name?: string;
   active?: boolean;
 };
-
+// style={{ animation: active ? `${throb} 750ms alternate infinite` : "" }}
 export const Badge = ({ color = "e36414", avatar, active }: BadgeProps) => {
-  return (
-    <Avatar
-      style={{ animation: active ? `${throb} 750ms alternate infinite` : "" }}
-    >
-      {avatar}
-    </Avatar>
-  );
+  return <Avatar>{avatar}</Avatar>;
 };

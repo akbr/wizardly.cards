@@ -1,4 +1,4 @@
-import { styled } from "goober";
+import { styled, keyframes } from "goober";
 
 export const DeadCenterWrapper = styled("div")`
   height: 100%;
@@ -50,4 +50,16 @@ export const Button = styled(ButtonBase)`
   background-color: mediumblue;
   border-radius: 12px;
   font-size: 1.25em;
+`;
+
+export const throb = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.15);
+  }
+`;
+export const Throb = styled("div")`
+  animation: ${throb} 1s alternate infinite;
 `;

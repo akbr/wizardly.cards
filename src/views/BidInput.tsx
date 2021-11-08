@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { styled } from "goober";
-import { Button } from "./common";
+import { Button, Throb } from "./common";
 import { isValidBid } from "../wizard/logic";
 
 const Outer = styled("div")`
@@ -42,7 +42,7 @@ export function BidInput({
   const [bid, setBid] = useState(0);
 
   if (!active) {
-    return <h2>Waiting for bids...</h2>;
+    return <Throb>Waiting for bids...</Throb>;
   }
 
   const bidIsvalid = isValidBid(bid, {

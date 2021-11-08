@@ -8,6 +8,7 @@ import { EmojiButton, Button } from "./common";
 
 import { DialogOf } from "./Dialog";
 import { ScoreTable } from "./ScoreTable";
+import { rotateArray } from "../lib/array";
 
 let flex = css`
   display: flex;
@@ -43,12 +44,7 @@ const Options = ({ exit }: { exit: () => void }) => {
   );
 };
 
-type UiButtonsProps = {
-  exit: () => void;
-  scores: number[][] | null;
-};
-
-export const UiButtons = ({ exit, scores }: UiButtonsProps) => {
+export const UiButtons = ({ state, actions, room }: WizardFrame) => {
   const [optionsVisible, setOptions] = useState(false);
   const [scoresVisible, setScores] = useState(false);
 
@@ -59,32 +55,29 @@ export const UiButtons = ({ exit, scores }: UiButtonsProps) => {
   const closeScores = useCallback(() => setScores(false), []);
   const doExit = useCallback(() => {
     closeOptions();
-    exit();
+    actions.exit();
   }, []);
 
   return (
     <Fragment>
       <div class={`${a} ${flex} ${topMargins}`} style={{ zIndex: "500" }}>
         <OptionsButton open={openOptions} />
-        {scores && <ScoresButton open={openScores} />}
+        {state && <ScoresButton open={openScores} />}
       </div>
       <DialogOf close={closeOptions} visible={optionsVisible}>
         <Options exit={doExit} />
       </DialogOf>
-    </Fragment>
-  );
-};
-
-/**
- *       <DialogOf close={closeScores} visible={scoresVisible}>
-        {scoresVisible && (
+      <DialogOf close={closeScores} visible={scoresVisible}>
+        {state && room && scoresVisible && (
           <div style={{ display: "grid", placeContent: "center" }}>
             <ScoreTable
-              scores={scores}
-              avatars={players.map((player) => player.avatar)}
-              playerIndex={playerIndex}
+              scores={state.scores}
+              avatars={rotateArray(room.seats, -room.seatIndex)}
+              playerIndex={room.seatIndex}
             />
           </div>
         )}
       </DialogOf>
- */
+    </Fragment>
+  );
+};

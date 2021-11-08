@@ -68,16 +68,19 @@ export const ScoreTable = ({
   let table = convert(scores.map((row) => rotateArray(row, -playerIndex)));
 
   return (
-    //@ts-ignore
-    <table border={"1"} style={{ backgroundColor: "#fff", color: "black" }}>
-      <tr>
-        {avatars.map((icon) => (
-          <PlayerHead>{icon}</PlayerHead>
+    <div style={{ textAlign: "center" }}>
+      <h2 style={{ marginBottom: "8px" }}>Scores</h2>
+      {/** @ts-ignore  */}
+      <table border={"1"} style={{ backgroundColor: "#fff", color: "black" }}>
+        <tr>
+          {avatars.map((icon) => (
+            <PlayerHead>{icon}</PlayerHead>
+          ))}
+        </tr>
+        {table.map((columns) => (
+          <PlayerRow columns={columns} />
         ))}
-      </tr>
-      {table.map((columns) => (
-        <PlayerRow columns={columns} />
-      ))}
-    </table>
+      </table>
+    </div>
   );
 };

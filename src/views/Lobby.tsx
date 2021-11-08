@@ -1,14 +1,14 @@
 import { Player } from "./types";
 
 import { styled, keyframes } from "goober";
-import { Fieldset, Container, Button } from "./common";
+import { Fieldset, Container, Button, Throb } from "./common";
 import { Badge } from "./Badge";
 
 const PlayerBox = styled(Fieldset)`
   display: inline-flex;
   justify-content: center;
-  gap: 0.5em;
-  padding: 0.5em;
+  gap: 4px;
+  padding: 8px;
 `;
 
 const Link = styled("div")`
@@ -78,7 +78,7 @@ export const Lobby = ({
           <Button onClick={start}>Start</Button>
         </>
       ) : (
-        <div>Waiting for game start ...</div>
+        <Throb>Waiting for game start ...</Throb>
       )}
     </Container>
   );

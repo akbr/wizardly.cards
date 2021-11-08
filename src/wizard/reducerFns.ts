@@ -47,8 +47,7 @@ export const toDeal = (s: Seed | TurnEnd): Deal => {
     trickWinner: null,
     bids: Array.from({ length: s.numPlayers }, () => null) as Core["bids"],
     actuals: Array.from({ length: s.numPlayers }, () => 0),
-    scores:
-      "scores" in s ? ([...s.scores, s.bids, s.actuals] as Core["scores"]) : [],
+    scores: "scores" in s ? s.scores : [],
     // Carry over
     options: s.options,
     numPlayers: s.numPlayers,

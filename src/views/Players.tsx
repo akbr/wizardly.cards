@@ -66,11 +66,11 @@ export const Players = ({
     const { x, y } = positions[idx][0];
     return (
       <div class={`${a} ${insideParentEdge(x, y)}`} key={idx}>
-        <Badge avatar={avatar} active={active} />
+        <Badge avatar={avatar} />
         {bids[idx] !== null ? (
           showBids ? (
             <Tooltip
-              style={{ animation: `${fadeIn} 1s both` }}
+              style={{ animation: `${fadeIn} 500ms both` }}
               dir={vecToDir({ x, y })}
             >
               {`Bid: ${bids[idx]}`}
@@ -87,10 +87,22 @@ export const Players = ({
               position: "absolute",
               bottom: "2px",
               left: "2px",
-              fontSize: "20px",
+              fontSize: "16px",
             }}
           >
-            ☝
+            1️⃣
+          </div>
+        )}
+        {active && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "2px",
+              right: "6px",
+              fontSize: "16px",
+            }}
+          >
+            ⏳
           </div>
         )}
       </div>

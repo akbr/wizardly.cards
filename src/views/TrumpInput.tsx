@@ -1,6 +1,6 @@
 import { useRef } from "preact/hooks";
 import { styled } from "goober";
-import { Button } from "./common";
+import { Button, Throb } from "./common";
 
 const Outer = styled("div")`
   display: flex;
@@ -20,7 +20,7 @@ export function TrumpInput({ active, selectTrump }: TrumpInputProps) {
   const ref = useRef<HTMLSelectElement>(null);
 
   if (!active) {
-    return <h2>Waiting for dealer to choose trump...</h2>;
+    return <Throb>Waiting for dealer to choose trump...</Throb>;
   }
 
   return (

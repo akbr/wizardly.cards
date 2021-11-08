@@ -2,9 +2,9 @@ import { indexOfMax, shuffle } from "../lib/array";
 
 const SEPERATOR = "|";
 const split = (cardId: string) => cardId.split(SEPERATOR);
-const getValue = (cardId: string) => parseInt(split(cardId)[0], 10);
-const getSuit = (cardId: string) => split(cardId)[1];
-const getTuple = (cardId: string): [number, string] => [
+export const getValue = (cardId: string) => parseInt(split(cardId)[0], 10);
+export const getSuit = (cardId: string) => split(cardId)[1];
+export const getTuple = (cardId: string): [number, string] => [
   getValue(cardId),
   getSuit(cardId),
 ];

@@ -8,34 +8,15 @@ import {
   useCallback,
   useEffect,
 } from "preact/hooks";
-import { Badge } from "./views/Badge";
+import { MiniCard } from "./lib/cardsViews/MiniCard";
 import { DeadCenterWrapper } from "./views/common";
-import { Tooltip } from "./views/Tooltip";
 
 setup(h);
 
 // -------------------------------
 
 const WIP = () => {
-  return (
-    <DeadCenterWrapper>
-      <div style={{ position: "relative", backgroundColor: "purple" }}>
-        <Badge avatar={"A"} />
-        <Tooltip dir={"left"}>
-          <div>Bid: 4</div>
-        </Tooltip>
-        <Tooltip dir={"right"}>
-          <div>Bid: 4</div>
-        </Tooltip>
-        <Tooltip dir={"top"}>
-          <div>Bid: 4</div>
-        </Tooltip>
-        <Tooltip dir={"bottom"}>
-          <div>Bid: 4</div>
-        </Tooltip>
-      </div>
-    </DeadCenterWrapper>
-  );
+  return <MiniCard suit={"w"} value={"h"} />;
 };
 
 // -------------------------------

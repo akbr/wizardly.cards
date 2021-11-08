@@ -16,11 +16,11 @@ import { ErrorReciever } from "./ErrorReceiver";
 import { rotateArray, rotateIndex } from "../lib/array";
 
 export function App(frame: WizardFrame) {
-  const { state, actions, err } = frame;
+  const { err } = frame;
 
   return (
     <>
-      <UiButtons exit={actions.exit} scores={state ? state.scores : null} />
+      <UiButtons {...frame} />
       <AppInner {...frame} />
       <ErrorReciever err={err} />
     </>
@@ -29,7 +29,6 @@ export function App(frame: WizardFrame) {
 
 function AppInner(frame: WizardFrame) {
   let { state, room, err, actions } = frame;
-
   if (room === null) {
     return <Title join={actions.join} />;
   }

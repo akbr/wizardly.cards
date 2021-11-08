@@ -26,6 +26,12 @@ export function init() {
 
   const $appRoot = document.getElementById("app")!;
 
+  render(
+    h(App, { ...harness.store.getState(), actions }),
+    $appRoot,
+    meter.waitFor
+  );
+
   store.subscribe((frame) => {
     render(h(App, { ...frame, actions }), $appRoot, meter.waitFor);
   });
@@ -34,5 +40,5 @@ export function init() {
 
   listenToHash(harness);
 
-  return { ...harness, actions };
+  return { ...harness, actions, server };
 }

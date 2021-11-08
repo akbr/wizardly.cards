@@ -1,16 +1,16 @@
-import { css } from "goober";
+import { css, keyframes } from "goober";
 
 export const a = css({
-  position: "absolute"
+  position: "absolute",
 });
 
 export const topMargins = css({
-  margin: "0.4em"
+  margin: "0.4em",
 });
 
 export const innerCenter = css({
   display: "grid",
-  placeContent: "center"
+  placeContent: "center",
 });
 
 const getPos = (d: number, offset: number) =>
@@ -18,7 +18,7 @@ const getPos = (d: number, offset: number) =>
 export const overParentEdge = ({
   x,
   y,
-  offset = 0
+  offset = 0,
 }: {
   x: number;
   y: number;
@@ -27,5 +27,5 @@ export const overParentEdge = ({
   css({
     transform: `translate(${-50}%, ${-50}%)`,
     left: getPos(x, offset),
-    top: getPos(y, offset)
+    top: getPos(y, offset),
   });

@@ -1,21 +1,7 @@
-import { styled } from "goober";
 import { a, topMargins } from "./commonCss";
-import { colors } from "../lib/cardsViews/createCard";
 import { getBidsDiff, getBidsStatus } from "./derivations";
-
-let MiniCard = styled("div")`
-  display: inline-block;
-  background-color: white;
-  padding: 4px;
-  border-radius: 2px;
-  margin: 6px 0px 6px 4px;
-`;
-
-let Icon = styled("svg")`
-  display: inline-block;
-  width: 1.2em;
-  height: 1.2em;
-`;
+import { MiniCard } from "../lib/cardsViews/MiniCard";
+import { getTuple } from "../wizard/logic";
 
 type PlayInfoProps = {
   turn: number;
@@ -33,34 +19,20 @@ export const PlayInfo = ({
   const bidsComplete = getBidsStatus(bids);
   const bidsDiff = getBidsDiff(bids, turn);
 
-  let [value, suit] = trumpCard ? trumpCard.split("|") : [];
-
-  value = suit === "w" ? "w" : suit === "j" ? "" : value;
+  const displayCard =
+    trumpCard !== null
+      ? (() => {
+          let [value, suit] = getTuple(trumpCard);
+          let showValue =
+            suit === "w" ? (trumpSuit !== null ? trumpSuit : undefined) : value;
+          return <MiniCard suit={suit} value={showValue} />;
+        })()
+      : null;
 
   return (
     <div class={`${a} ${topMargins}`} style={{ right: 0, textAlign: "right" }}>
       <div>Round {turn}</div>
-      {trumpSuit && (
-        <MiniCard>
-          <Icon style={{ fill: colors[trumpSuit] }}>
-            <use href={`#card-${trumpSuit}`}></use>
-          </Icon>
-          {value !== "" && (
-            <Icon
-              style={{
-                fill:
-                  value === "w"
-                    ? colors.w
-                    : value === "j"
-                    ? colors.j
-                    : colors[trumpSuit],
-              }}
-            >
-              <use href={`#card-${value}`}></use>
-            </Icon>
-          )}
-        </MiniCard>
-      )}
+      {displayCard}
       {bidsComplete &&
         (bidsDiff === 0 ? (
           <div>Even bids</div>

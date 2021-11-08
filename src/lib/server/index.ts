@@ -361,7 +361,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
 
   serverApi = {
     onOpen: (socket) => {
-      socket.send(["server", { type: "room", data: null }]);
+      //socket.send(["server", { type: "room", data: null }]);
     },
     onClose: (socket) => {
       leaveRoom(socket);
