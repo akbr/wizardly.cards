@@ -79,7 +79,7 @@ function AppInner(frame: WizardFrame) {
     state.type === "trickEnd"
       ? rotateIndex(state.numPlayers, state.trickWinner, -state.trickLeader)
       : undefined;
-  const hand = hands[0];
+  const hand = hands[seatIndex];
 
   return (
     <DragSurface {...{ isInHand, isValidPlay, play }}>
