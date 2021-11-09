@@ -17,18 +17,6 @@ type BidEndProps = {
   turn: number;
 };
 
-export function BidEnd({ bids, turn }: BidEndProps) {
-  let diff = getBidsDiff(bids, turn);
-
-  return diff === 0 ? (
-    <div>⚖️ Even bids!</div>
-  ) : diff > 0 ? (
-    <div>📉 Underbid by {Math.abs(diff)}!</div>
-  ) : (
-    <div>📈 Overbid by {Math.abs(diff)}!</div>
-  );
-}
-
 export function TableCenter({ state, room, actions }: WizardGameFrame) {
   const active = room.seatIndex === state.activePlayer;
 
@@ -47,9 +35,7 @@ export function TableCenter({ state, room, actions }: WizardGameFrame) {
               submit: actions.bid,
             }}
           />
-        ) : state.type === "bidEnd" ? (
-          <BidEnd bids={state.bids} turn={state.turn} />
-        ) : state.type === "selectTrump" ? (
+        ) : state.type === "bidEnd" ? null : state.type === "selectTrump" ? (
           <TrumpInput
             {...{
               active,
@@ -58,11 +44,25 @@ export function TableCenter({ state, room, actions }: WizardGameFrame) {
           />
         ) : state.type === "turnEnd" ? (
           <div>
-            <h3>Round End</h3>
-            <Throb>Tallying scores...</Throb>
+            <h3>Round Over</h3>
           </div>
         ) : null}
       </LimitWidth>
     </DeadCenterWrapper>
   );
 }
+/**
+ * 
+ * 
+export function BidEnd({ bids, turn }: BidEndProps) {
+  let diff = getBidsDiff(bids, turn);
+
+  return diff === 0 ? (
+    <div>⚖️ Even bids</div>
+  ) : diff > 0 ? (
+    <div>📈 Overbid by {Math.abs(diff)}</div>
+  ) : (
+    <div>📉 Underbid by {Math.abs(diff)}</div>
+  );
+}
+ */

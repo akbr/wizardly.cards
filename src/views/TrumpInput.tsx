@@ -25,7 +25,7 @@ export function TrumpInput({ active, selectTrump }: TrumpInputProps) {
 
   return (
     <Outer>
-      <h2>Select trump:</h2>
+      <h3>Select trump:</h3>
       <select ref={ref} name="suits" style={{ maxWidth: "100px" }}>
         <option value="c">Clubs ♣</option>
         <option value="d">Diamonds ♦</option>

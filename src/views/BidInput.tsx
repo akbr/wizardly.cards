@@ -53,10 +53,10 @@ export function BidInput({
 
   return (
     <Outer>
-      <h2>Enter bid:</h2>
+      <h3>Enter bid:</h3>
       <Console>
         <Button
-          style={{ minWidth: "48px", minHeight: "48px" }}
+          style={{ minWidth: "36px", minHeight: "36px" }}
           onClick={() => setBid(bid + 1)}
           disabled={bid === turn}
         >
@@ -66,7 +66,7 @@ export function BidInput({
           {bid}
         </BidDisplay>
         <Button
-          style={{ minWidth: "48px", minHeight: "48px" }}
+          style={{ minWidth: "36px", minHeight: "36px" }}
           onClick={() => setBid(bid - 1)}
           disabled={bid === 0}
         >

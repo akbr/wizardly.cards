@@ -45,6 +45,18 @@ const fadeIn = keyframes`
   }
 `;
 
+const EmojiNum = styled("div")`
+  text-align: center;
+  padding-top: 2px;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #000;
+  background-color: #1e90ff;
+  font-size: 12px;
+`;
+
+const EmojiOne = () => <EmojiNum>1</EmojiNum>;
+
 type PlayersProps = {
   showBids: boolean;
   players: Player[];
@@ -85,12 +97,12 @@ export const Players = ({
           <div
             style={{
               position: "absolute",
-              bottom: "2px",
-              left: "2px",
+              bottom: "3px",
+              left: "5px",
               fontSize: "16px",
             }}
           >
-            1️⃣
+            <EmojiOne />
           </div>
         )}
         {active && (

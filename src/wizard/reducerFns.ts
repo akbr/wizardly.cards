@@ -66,7 +66,7 @@ export const onDeal = (s: Deal): SelectTrump | Bid => {
       : rotateIndex(s.numPlayers, s.dealer),
     hands,
     trumpCard,
-    trumpSuit,
+    trumpSuit: trumpCardIsWizard ? null : trumpSuit,
   };
 };
 

@@ -29,8 +29,8 @@ export function createLocalSocket<I, O>(server: Server<I, O>) {
 
   async(() => {
     connected = true;
-    if (clientSocket.onopen) clientSocket.onopen();
     server.onOpen(serverSocket);
+    if (clientSocket.onopen) clientSocket.onopen();
   });
 
   return clientSocket;

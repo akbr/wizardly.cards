@@ -12,6 +12,5 @@ type DealProps = {
 export const Dealing = ({ turn }: DealProps) => (
   <Wrapper>
     <h2>Round {turn}</h2>
-    <Throb>Dealing ...</Throb>
   </Wrapper>
 );

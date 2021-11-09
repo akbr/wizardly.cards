@@ -63,3 +63,15 @@ export const throb = keyframes`
 export const Throb = styled("div")`
   animation: ${throb} 1s alternate infinite;
 `;
+
+export const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+export const Appear = styled("div")`
+  animation: ${fadeIn} 750ms;
+`;

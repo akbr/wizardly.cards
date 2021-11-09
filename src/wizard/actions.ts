@@ -62,7 +62,7 @@ export const createActions = ({
       };
     },
     exit: () => {
-      store.setState({ state: null });
+      store.setState({ state: null, room: null });
       manager.openSocket();
     },
     waitFor,
