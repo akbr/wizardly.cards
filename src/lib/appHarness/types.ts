@@ -4,7 +4,7 @@ import type {
   OutputsWith,
   InputsWith,
   ServerTypes,
-  Room,
+  RoomState,
 } from "../server//types";
 import type { Meter } from "../timing";
 import type { StoreApi } from "zustand/vanilla";
@@ -16,13 +16,13 @@ export type ManagerWith<ET extends EngineTypesShape> = SocketManager<
 
 export type Frame<ET extends EngineTypesShape> = {
   state: ET["states"] | null;
-  room: Room["data"];
+  room: RoomState["data"];
   err: ET["msgs"] | ServerTypes<ET>["msgs"] | null;
 };
 
 export type GameFrame<ET extends EngineTypesShape> = {
   state: ET["states"];
-  room: Exclude<Room["data"], null>;
+  room: Exclude<RoomState["data"], null>;
   err: ET["msgs"] | ServerTypes<ET>["msgs"] | null;
 };
 

@@ -4,6 +4,7 @@ import { render } from "./lib/premix";
 
 import { createServer } from "./lib/server";
 
+import { WizardShape } from "./wizard/types";
 import { engine } from "./wizard";
 import { createHarness } from "./lib/appHarness";
 import { listenToHash } from "./lib/appHarness/listenToHash";
@@ -19,7 +20,7 @@ export function init() {
     ? createServer(engine)
     : location.origin.replace(/^http/, "ws");
 
-  const harness = createHarness(server);
+  const harness = createHarness<WizardShape>(server);
   const actions = createActions(harness);
 
   let { store, meter, manager } = harness;

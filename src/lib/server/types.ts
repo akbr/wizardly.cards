@@ -1,4 +1,10 @@
+import type { Server, Socket } from "../socket/types";
+
+// ------
+// ENGINE
+// ------
 export type Msg = { type: string; [key: string]: any };
+
 type Options = { [key: string]: any };
 
 export type EngineTypesShape = {
@@ -41,14 +47,10 @@ export interface Engine<T extends EngineTypesShape> {
   ) => Bot<T["states"]>;
 }
 
-export type GetUiStates<T extends EngineTypesShape> = (
-  state: T["states"],
-  prev?: T["states"]
-) => T["uiStates"] | T["uiStates"][] | undefined;
-
-// ---
-
-export type Room = {
+// ---------------------
+// SERVER STATES/ACTIONS
+// ---------------------
+export type RoomState = {
   type: "room";
   data: {
     id: string;
@@ -78,7 +80,7 @@ export type AddBot<Options> = {
 };
 
 export type ServerTypes<ET extends EngineTypesShape> = {
-  states: Room;
+  states: RoomState;
   msgs: Error;
   actions: Join | Start<ET["options"]> | AddBot<ET["botOptions"]>;
 };
@@ -92,3 +94,36 @@ export type OutputsWith<ET extends EngineTypesShape> =
 export type InputsWith<ET extends EngineTypesShape> =
   | ["engine", ET["actions"]]
   | ["server", ServerTypes<ET>["actions"]];
+
+// -----------------
+// SERVER COMPOSITES
+// -----------------
+export type ServerApi<ET extends EngineTypesShape> = Server<
+  InputsWith<ET>,
+  OutputsWith<ET>
+>;
+
+export type ServerSocket<ET extends EngineTypesShape> = Socket<
+  OutputsWith<ET>,
+  InputsWith<ET>
+>;
+
+export type BotSocket<ET extends EngineTypesShape> = Socket<
+  InputsWith<ET>,
+  OutputsWith<ET>
+>;
+
+export type Room<ET extends EngineTypesShape> = {
+  id: string;
+  seats: (ServerSocket<ET> | false)[];
+  spectators: ServerSocket<ET>[];
+  state: ET["states"] | false;
+};
+
+export type ServerContext<ET extends EngineTypesShape> = {
+  engine: Engine<ET>;
+  rooms: Map<string, Room<ET>>;
+  sockets: Map<ServerSocket<ET>, string>;
+  botSockets: Set<ServerSocket<ET>>;
+  api: ServerApi<ET>;
+};
