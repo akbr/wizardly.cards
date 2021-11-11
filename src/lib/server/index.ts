@@ -133,7 +133,7 @@ export function createServer<ET extends EngineTypesShape>(engine: Engine<ET>) {
     let roomObj = JSON.parse(json);
     Object.values(roomObj).forEach((room) => {
       //@ts-ignore
-      rooms.set(room.id, room);
+      ctx.rooms.set(room.id, room);
     });
   };
 

@@ -1,4 +1,4 @@
-import { WithUpdate, useOnResize } from "../premix";
+import { WithUpdate, useWindowSize } from "../premix";
 import { ComponentChildren } from "preact";
 import { Dimensions } from "./types";
 import { playUpdate } from "./playUpdate";
@@ -14,26 +14,37 @@ export const CardsPlay = ({
   getTableDimensions,
   ...rest
 }: CardUpdateProps<typeof playUpdate> & {
-  getTableDimensions: () => Dimensions;
+  getTableDimensions: (width: number, height: number) => Dimensions;
 }) => {
-  let tableDimensions = useOnResize(getTableDimensions);
-
+  const [innerWidth, innerHeight] = useWindowSize();
   return (
-    <WithUpdate fn={playUpdate} props={{ ...rest, tableDimensions }}>
+    <WithUpdate
+      fn={playUpdate}
+      props={{
+        ...rest,
+        tableDimensions: getTableDimensions(innerWidth, innerHeight),
+      }}
+    >
       <div />
     </WithUpdate>
   );
 };
 
-const getAppDimensions = () => ({
-  w: window.innerWidth > 700 ? 700 : window.innerWidth,
-  h: window.innerHeight,
+const getAppDimensions = (innerWidth: number, innerHeight: number) => ({
+  w: innerWidth > 700 ? 700 : innerWidth,
+  h: innerHeight,
 });
 
 export const CardsHand = (props: CardUpdateProps<typeof handUpdate>) => {
-  let appDimensions = useOnResize(getAppDimensions);
+  const [innerWidth, innerHeight] = useWindowSize();
   return (
-    <WithUpdate fn={handUpdate} props={{ ...props, appDimensions }}>
+    <WithUpdate
+      fn={handUpdate}
+      props={{
+        ...props,
+        appDimensions: getAppDimensions(innerWidth, innerHeight),
+      }}
+    >
       <div
         id="hand"
         style={{

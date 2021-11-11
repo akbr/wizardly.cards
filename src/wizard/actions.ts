@@ -47,15 +47,16 @@ export const createActions = ({
         return true;
       }
     },
-    getTableDimensions: () => {
+    getTableDimensions: (inputWidth: number, inputHeight: number) => {
       let { room, state } = getState();
       let hand = room && state ? state.hands[room.seatIndex] : [];
       let screen = {
-        w: window.innerWidth > 700 ? 700 : window.innerWidth,
-        h: window.innerHeight,
+        w: inputWidth > 700 ? 700 : inputWidth,
+        h: inputHeight,
       };
       let space = getHandHeight(screen, hand.length || 1);
       let extraBuffer = 24;
+
       return {
         w: screen.w,
         h: screen.h - space - extraBuffer,

@@ -4,7 +4,7 @@ import {
   ComponentChild,
   ComponentChildren,
   Ref,
-  Fragment
+  Fragment,
 } from "preact";
 import { useState, useEffect, useRef, useLayoutEffect } from "preact/hooks";
 import { WaitRequest } from "./timing";
@@ -30,7 +30,7 @@ type Updater<T> = (
 export const WithUpdate = <T>({
   props,
   fn,
-  children
+  children,
 }: {
   props: T;
   fn: Updater<T>;
@@ -76,26 +76,25 @@ function debounce(func: Function, wait: number, immediate: boolean) {
     };
     var callNow = immediate && !timeout;
     clearTimeout(timeout);
+    //@ts-ignore
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
 }
 
-export function useOnResize<T>(fn: () => T) {
-  let [value, setValue] = useState(fn());
+export function useWindowSize() {
+  let [value, setValue] = useState([window.innerWidth, window.innerHeight]);
 
   useEffect(() => {
     const update = debounce(
-      function update() {
-        setValue(fn());
-      },
+      () => setValue([window.innerWidth, window.innerHeight]),
       300,
       false
     );
 
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [fn]);
+  }, []);
 
   return value;
 }

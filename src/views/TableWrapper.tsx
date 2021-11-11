@@ -1,7 +1,7 @@
 import { ComponentChildren } from "preact";
 import { css } from "goober";
 import { Dimensions } from "../lib/cardsViews/types";
-import { useOnResize } from "../lib/premix";
+import { useWindowSize } from "../lib/premix";
 
 export const tableWrapper = css`
   position: absolute;
@@ -11,12 +11,13 @@ export const tableWrapper = css`
 
 export const TableWrapper = ({
   children,
-  getTableDimensions
+  getTableDimensions,
 }: {
   children?: ComponentChildren;
-  getTableDimensions: () => Dimensions;
+  getTableDimensions: (width: number, height: number) => Dimensions;
 }) => {
-  let { h } = useOnResize(getTableDimensions);
+  const [innerWidth, innerHeight] = useWindowSize();
+  const { h } = getTableDimensions(innerWidth, innerHeight);
   return (
     <div className={`${tableWrapper}`} style={{ height: `${h}px` }}>
       {children}
