@@ -1,9 +1,17 @@
 import "./styles.css";
 import { init } from "./init";
+let { store, server, actions } = init();
+
+/**
+
+
+import W from "./WIP";
+W;
+
+
 
 window.location.hash = "#";
 
-let { store, server, actions } = init();
 
 //@ts-ignore
 window.server = server;
@@ -17,14 +25,6 @@ actions.join("MNIS");
 actions.addBot();
 actions.addBot();
 actions.addBot();
-
-/**
-
-
-import W from "./WIP";
-W;
-
-
 
 
 
