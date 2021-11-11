@@ -67,14 +67,12 @@ const notchPositions: { [key: string]: any } = {
 export const Tooltip = ({
   dir,
   children,
-  style = {},
 }: {
   dir: string;
   children: ComponentChildren;
-  style?: { [key: string]: string | number };
 }) => {
   return (
-    <Outer style={{ ...positions[dir], ...style }}>
+    <Outer style={positions[dir]}>
       {children}
       <Notch style={notchPositions[dir]} />
     </Outer>

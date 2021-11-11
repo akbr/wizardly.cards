@@ -1,8 +1,19 @@
+import { styled } from "goober";
 import { a, topMargins } from "./commonCss";
 import { getBidsDiff, getBidsStatus } from "./derivations";
 import { MiniCard } from "../lib/cardsViews/MiniCard";
 import { getTuple } from "../wizard/logic";
 import { Appear } from "./common";
+
+const InfoContainer = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: absolute;
+  margin: 6px;
+  right: 0;
+  text-align: right;
+`;
 
 const getDisplayCard = (trumpCard: string | null, trumpSuit: string | null) => {
   if (trumpCard === null) return null;
@@ -35,9 +46,9 @@ export const PlayInfo = ({
   const displayCard = getDisplayCard(trumpCard, trumpSuit);
 
   return (
-    <div class={`${a} ${topMargins}`} style={{ right: 0, textAlign: "right" }}>
-      <div>Round {turn}</div>
-      {displayCard}
+    <InfoContainer>
+      <div>Round: {turn}</div>
+      {displayCard && <Appear>{displayCard}</Appear>}
       {bidsComplete && (
         <Appear>
           {bidsDiff === 0 ? (
@@ -49,6 +60,6 @@ export const PlayInfo = ({
           )}
         </Appear>
       )}
-    </div>
+    </InfoContainer>
   );
 };

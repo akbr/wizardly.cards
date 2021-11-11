@@ -3,10 +3,9 @@ import { colors } from "./createCard";
 
 const Card = styled("div")`
   display: inline-block;
-  background-color: white;
+  background-color: #fffff4;
   padding: 4px;
   border-radius: 2px;
-  margin: 6px 0px 6px 4px;
 `;
 
 const Icon = styled("svg")`

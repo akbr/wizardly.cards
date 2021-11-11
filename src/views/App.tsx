@@ -20,7 +20,6 @@ export function App(frame: WizardFrame) {
 
   return (
     <>
-      <UiButtons {...frame} />
       <AppInner {...frame} />
       <ErrorReciever err={err} />
     </>
@@ -41,13 +40,16 @@ function AppInner(frame: WizardFrame) {
 
   if (state === null) {
     return (
-      <Lobby
-        players={players}
-        isAdmin={room.seatIndex === 0}
-        roomId={room.id}
-        start={actions.start}
-        addBot={actions.addBot}
-      />
+      <>
+        <UiButtons {...frame} />
+        <Lobby
+          players={players}
+          isAdmin={room.seatIndex === 0}
+          roomId={room.id}
+          start={actions.start}
+          addBot={actions.addBot}
+        />
+      </>
     );
   }
 
@@ -81,31 +83,34 @@ function AppInner(frame: WizardFrame) {
   const hand = hands[seatIndex];
 
   return (
-    <DragSurface {...{ isInHand, isValidPlay, play }}>
-      <TableWrapper {...{ getTableDimensions }}>
-        <Players
+    <>
+      <UiButtons {...frame} />
+      <DragSurface {...{ isInHand, isValidPlay, play }}>
+        <TableWrapper {...{ getTableDimensions }}>
+          <Players
+            {...{
+              showBids: type === "bid" || type === "bidEnd",
+              players: rotateArray(players, -seatIndex),
+              bids: rotateArray(bids, -seatIndex),
+              actuals: rotateArray(actuals, -seatIndex),
+              trickLeader: rotateIndex(numPlayers, trickLeader, -seatIndex),
+            }}
+          />
+          <TableCenter {...{ state, room, actions, err }} />
+        </TableWrapper>
+        <PlayInfo {...{ bids, turn, trumpCard, trumpSuit }} />
+        <CardsPlay
           {...{
-            showBids: type === "bid" || type === "bidEnd",
-            players: rotateArray(players, -seatIndex),
-            bids: rotateArray(bids, -seatIndex),
-            actuals: rotateArray(actuals, -seatIndex),
-            trickLeader: rotateIndex(numPlayers, trickLeader, -seatIndex),
+            getTableDimensions,
+            trick,
+            numPlayers,
+            playerPerspective: seatIndex,
+            startPlayer: trickLeader,
+            winningIndex,
           }}
         />
-        <TableCenter {...{ state, room, actions, err }} />
-      </TableWrapper>
-      <PlayInfo {...{ bids, turn, trumpCard, trumpSuit }} />
-      <CardsPlay
-        {...{
-          getTableDimensions,
-          trick,
-          numPlayers,
-          playerPerspective: seatIndex,
-          startPlayer: trickLeader,
-          winningIndex,
-        }}
-      />
-      {hand.length > 0 && <CardsHand hand={hand} />}
-    </DragSurface>
+        {hand.length > 0 && <CardsHand hand={hand} />}
+      </DragSurface>
+    </>
   );
 }

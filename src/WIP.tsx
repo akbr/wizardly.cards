@@ -8,7 +8,7 @@ import {
   useCallback,
   useEffect,
 } from "preact/hooks";
-import { MiniCard } from "./lib/cardsViews/MiniCard";
+import { EmojiOne } from "./views/Players";
 import { DeadCenterWrapper } from "./views/common";
 
 setup(h);
@@ -19,6 +19,7 @@ const WIP = () => {
   return (
     <>
       <div>1️⃣</div>
+      <EmojiOne />
     </>
   );
 };

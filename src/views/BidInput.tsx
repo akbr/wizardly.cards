@@ -42,7 +42,11 @@ export function BidInput({
   const [bid, setBid] = useState(0);
 
   if (!active) {
-    return <Throb>Waiting for bids...</Throb>;
+    return (
+      <Throb>
+        <h3>Waiting for bids...</h3>
+      </Throb>
+    );
   }
 
   const bidIsvalid = isValidBid(bid, {
