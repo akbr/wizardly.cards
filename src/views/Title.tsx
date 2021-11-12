@@ -1,11 +1,26 @@
+import { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 import { styled } from "goober";
-import { Fieldset, Container, Button } from "./common";
+import { Fieldset, Button, Container } from "./common";
+
+const TitleWrapper = styled("div")`
+  margin-top: 0.5em;
+  width: min-content;
+`;
 
 const Banner = styled("div")`
-  font-size: 5em;
-  font-weight: bold;
-  margin-bottom: 48px;
+  display: inline-block;
+  text-align: center;
+  font-family: "Berkshire Swash", cursive;
+  font-size: 6em;
+`;
+
+const SubBanner = styled("div")`
+  display: inline-block;
+  width: 100%;
+  margin-top: -1em;
+  padding-right: 0.25em;
+  text-align: right;
 `;
 
 const GameInput = styled("input")`
@@ -18,12 +33,26 @@ const GameInput = styled("input")`
   height: 1.75em;
 `;
 
-export const Title = ({ join }: { join: (id?: string) => void }) => {
-  const [code, setCode] = useState("");
+const Footer = styled("div")`
+  position: absolute;
+  font-size: 12px;
+  bottom: 0.4em;
+  right: 0.4em;
+`;
 
+const TitleBlock = () => (
+  <TitleWrapper>
+    <Banner>Wizard</Banner>
+    <SubBanner>Trump your friends!</SubBanner>
+  </TitleWrapper>
+);
+
+type JoinProps = { join: (id?: string) => void };
+
+const Interface = ({ join }: JoinProps) => {
+  const [code, setCode] = useState("");
   return (
-    <Container>
-      <Banner>Wizard</Banner>
+    <Container style={{ gap: "1em" }}>
       <Button onClick={() => join()}>New Game</Button>
       <h2> OR </h2>
       <Fieldset>
@@ -48,3 +77,30 @@ export const Title = ({ join }: { join: (id?: string) => void }) => {
     </Container>
   );
 };
+
+export const PreGameWrapper = ({
+  children,
+}: {
+  children: ComponentChildren;
+}) => {
+  return (
+    <>
+      <Container>
+        <TitleBlock />
+      </Container>
+      {children}
+      <Footer style={{ textAlign: "right" }}>
+        <div>Wizard by Ken Fisher.</div>
+        <div>App by Aaron Rieke.</div>
+      </Footer>
+    </>
+  );
+};
+
+export const Title = ({ join }: JoinProps) => (
+  <PreGameWrapper>
+    <div style={{ marginTop: "3em" }}>
+      <Interface join={join} />
+    </div>
+  </PreGameWrapper>
+);

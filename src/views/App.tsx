@@ -40,16 +40,14 @@ function AppInner(frame: WizardFrame) {
 
   if (state === null) {
     return (
-      <>
-        <UiButtons {...frame} />
-        <Lobby
-          players={players}
-          isAdmin={room.seatIndex === 0}
-          roomId={room.id}
-          start={actions.start}
-          addBot={actions.addBot}
-        />
-      </>
+      <Lobby
+        players={players}
+        isAdmin={room.seatIndex === 0}
+        roomId={room.id}
+        start={actions.start}
+        exit={actions.exit}
+        addBot={actions.addBot}
+      />
     );
   }
 

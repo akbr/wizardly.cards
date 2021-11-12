@@ -10,10 +10,6 @@ export const Container = styled("div")`
   display: flex;
   align-items: center;
   flex-direction: column;
-  text-align: center;
-  height: 100%;
-  gap: 16px;
-  margin-top: 48px;
 `;
 
 export const Fieldset = styled("fieldset")`

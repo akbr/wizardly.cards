@@ -2,20 +2,30 @@ import { Player } from "./types";
 
 import { styled, keyframes } from "goober";
 import { Fieldset, Container, Button, Throb } from "./common";
+import { PreGameWrapper } from "./Title";
 import { Badge } from "./Badge";
 
-const PlayerBox = styled(Fieldset)`
+const RoomInfoContainer = styled("div")`
   display: inline-flex;
+  gap: 1em;
+`;
+
+const PlayerBox = styled(Fieldset)`
+  display: flex;
   justify-content: center;
   gap: 4px;
   padding: 8px;
 `;
 
-const Link = styled("div")`
+const Link = styled("input")`
+  border: none;
+  font-size: 1em;
   cursor: pointer;
-  padding: 0.3em;
+  color: white;
+  text-align: center;
+  padding: 2px;
+  background-color: rgba(0, 0, 0, 0);
   &:hover {
-    border-radius: 0.2em;
     background-color: yellow;
     color: black;
   }
@@ -40,6 +50,7 @@ type LobbyProps = {
   roomId: string;
   isAdmin: boolean;
   start: () => void;
+  exit: () => void;
   addBot?: () => void;
 };
 
@@ -49,37 +60,55 @@ export const Lobby = ({
   roomId,
   start,
   addBot,
+  exit,
 }: LobbyProps) => {
   const url = window.location.host + "/#" + roomId;
 
   return (
-    <Container>
-      <h1>Lobby</h1>
-      <PlayerBox>
-        <legend>Invite your friends:</legend>
-        <Link onclick={() => navigator.clipboard.writeText(url)}>
-          <span role="img" aria-label="clipboard">
-            📋
-          </span>{" "}
-          {url}
-        </Link>
-      </PlayerBox>
-      <PlayerBox>
-        <legend>Players in room:</legend>
-        {players.map((player) => (
-          <Fader>
-            <Badge {...player} />
-          </Fader>
-        ))}
-      </PlayerBox>
-      {isAdmin ? (
-        <>
-          {addBot && <Button onClick={addBot}>Add bot</Button>}
-          <Button onClick={start}>Start</Button>
-        </>
-      ) : (
-        <Throb>Waiting for game start ...</Throb>
-      )}
-    </Container>
+    <PreGameWrapper>
+      <Container style={{ gap: "1em" }}>
+        <div style={{ marginTop: "2.5em" }}>
+          <Throb>Waiting for players...</Throb>
+        </div>
+        <RoomInfoContainer>
+          <PlayerBox>
+            <legend>✏️ Room code:</legend>
+            <div>{roomId}</div>
+          </PlayerBox>
+          <PlayerBox>
+            <legend>⚡ Live link:</legend>
+            <div style={{ textAlign: "center" }}>
+              <Link
+                readonly
+                value={url}
+                onclick={(el) => {
+                  el.target.select();
+                  el.target.setSelectionRange(1, 99999);
+                  navigator.clipboard.writeText(el.target.value);
+                  alert("Copied to clipboard.");
+                }}
+              />
+            </div>
+          </PlayerBox>
+        </RoomInfoContainer>
+        <PlayerBox>
+          <legend>Players in room:</legend>
+          {players.map((player) => (
+            <Fader>
+              <Badge {...player} />
+            </Fader>
+          ))}
+        </PlayerBox>
+        {isAdmin ? (
+          <>
+            {addBot && <Button onClick={addBot}>Add bot</Button>}
+            {players.length > 1 && <Button onClick={start}>Start</Button>}
+          </>
+        ) : (
+          <div>The game creator will start the game. Hang tight!</div>
+        )}
+        <Button onclick={exit}>Exit</Button>
+      </Container>
+    </PreGameWrapper>
   );
 };

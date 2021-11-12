@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Roboto&display=swap");
+
 :root {
   --app-max-width: 700px;
   --app-min-width: 300px;
@@ -18,7 +20,7 @@
 
 html,
 body {
-  font-family: Arial;
+  font-family: "Roboto";
   overflow: hidden;
   height: 100%;
   width: 100%;
