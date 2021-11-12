@@ -56,7 +56,7 @@ const Interface = ({ join }: JoinProps) => {
       <Button onClick={() => join()}>New Game</Button>
       <h2> OR </h2>
       <Fieldset>
-        <legend>Enter a room code:</legend>
+        <legend>✏️ Enter a code:</legend>
         <GameInput
           onInput={
             //@ts-ignore

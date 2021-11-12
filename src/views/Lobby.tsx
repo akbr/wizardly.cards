@@ -66,29 +66,39 @@ export const Lobby = ({
 
   return (
     <PreGameWrapper>
-      <Container style={{ gap: "0.75em" }}>
-        <div style={{ marginTop: "1.5em" }}>
-          <Throb>Waiting for players...</Throb>
-        </div>
-        <PlayerBox>
-          <legend>✏️ Room code:</legend>
-          <div>{roomId}</div>
-        </PlayerBox>
-        <PlayerBox>
-          <legend>⚡ Live link:</legend>
-          <div style={{ textAlign: "center" }}>
-            <Link
-              readonly
-              type={"text"}
-              value={url}
-              onclick={(el) => {
-                //el.target.select();
-                //el.target.setSelectionRange(0, 99999);
-                navigator.clipboard.writeText(el.target.value);
-              }}
-            />
-          </div>
-        </PlayerBox>
+      <Container style={{ gap: "1.5em", marginTop: "1.5em" }}>
+        <Throb style={{ color: "yellow" }}>Waiting for players...</Throb>
+        <RoomInfoContainer>
+          <PlayerBox>
+            <legend>✏️ Code:</legend>
+            <div style={{ textAlign: "center" }}>
+              <Link
+                readonly
+                size={roomId.length - 2}
+                type={"text"}
+                value={roomId}
+                onclick={(e: any) => {
+                  navigator.clipboard.writeText(e.target.value);
+                }}
+              />
+            </div>
+          </PlayerBox>
+          <PlayerBox>
+            <legend>⚡ Direct link:</legend>
+            <div style={{ textAlign: "center" }}>
+              <span></span>
+              <Link
+                readonly
+                size={url.length - 2}
+                type={"text"}
+                value={url}
+                onclick={(e: any) => {
+                  navigator.clipboard.writeText(e.target.value);
+                }}
+              />
+            </div>
+          </PlayerBox>
+        </RoomInfoContainer>
         <PlayerBox>
           <legend>Players in room:</legend>
           {players.map((player) => (
