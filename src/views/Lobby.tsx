@@ -79,13 +79,12 @@ export const Lobby = ({
             <legend>⚡ Live link:</legend>
             <div style={{ textAlign: "center" }}>
               <Link
-                readonly
+                type={"text"}
                 value={url}
                 onclick={(el) => {
                   el.target.select();
-                  el.target.setSelectionRange(1, 99999);
+                  el.target.setSelectionRange(0, 99999);
                   navigator.clipboard.writeText(el.target.value);
-                  alert("Copied to clipboard.");
                 }}
               />
             </div>
