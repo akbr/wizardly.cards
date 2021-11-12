@@ -66,8 +66,8 @@ export const Lobby = ({
 
   return (
     <PreGameWrapper>
-      <Container style={{ gap: "1em" }}>
-        <div style={{ marginTop: "2.5em" }}>
+      <Container style={{ gap: "0.75em" }}>
+        <div style={{ marginTop: "1.5em" }}>
           <Throb>Waiting for players...</Throb>
         </div>
         <PlayerBox>
@@ -78,6 +78,7 @@ export const Lobby = ({
           <legend>⚡ Live link:</legend>
           <div style={{ textAlign: "center" }}>
             <Link
+              readonly
               type={"text"}
               value={url}
               onclick={(el) => {
