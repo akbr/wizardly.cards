@@ -43,9 +43,13 @@ const ButtonBase = styled("button")`
 export const Button = styled(ButtonBase)`
   padding: 12px;
   color: white;
-  background-color: mediumblue;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  background-size: 100% auto;
+  background-image: linear-gradient(to right, mediumblue 0%, blue 50%);
+  background-position: right center;
   border-radius: 12px;
-  font-size: 1.25em;
+  font-size: 1em;
 `;
 
 export const throb = keyframes`

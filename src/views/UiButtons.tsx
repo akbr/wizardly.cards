@@ -8,7 +8,6 @@ import { EmojiButton, Button } from "./common";
 
 import { DialogOf } from "./Dialog";
 import { ScoreTable } from "./ScoreTable";
-import { rotateArray } from "../lib/array";
 
 let flex = css`
   display: flex;
@@ -72,7 +71,7 @@ export const UiButtons = ({ state, actions, room }: WizardFrame) => {
           <div style={{ display: "grid", placeContent: "center" }}>
             <ScoreTable
               scores={state.scores}
-              avatars={rotateArray(room.seats, -room.seatIndex)}
+              avatars={room.seats}
               playerIndex={room.seatIndex}
             />
           </div>

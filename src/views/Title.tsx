@@ -11,6 +11,7 @@ const TitleWrapper = styled("div")`
 const Banner = styled("div")`
   display: inline-block;
   text-align: center;
+  filter: drop-shadow(0px 0px 0.15em blue);
   font-family: "Berkshire Swash", cursive;
   font-size: 6em;
 `;
@@ -36,8 +37,8 @@ const GameInput = styled("input")`
 const Footer = styled("div")`
   position: absolute;
   font-size: 12px;
-  bottom: 0.4em;
-  right: 0.4em;
+  bottom: 0.6em;
+  right: 0.6em;
 `;
 
 const TitleBlock = () => (
