@@ -70,26 +70,24 @@ export const Lobby = ({
         <div style={{ marginTop: "2.5em" }}>
           <Throb>Waiting for players...</Throb>
         </div>
-        <RoomInfoContainer>
-          <PlayerBox>
-            <legend>✏️ Room code:</legend>
-            <div>{roomId}</div>
-          </PlayerBox>
-          <PlayerBox>
-            <legend>⚡ Live link:</legend>
-            <div style={{ textAlign: "center" }}>
-              <Link
-                type={"text"}
-                value={url}
-                onclick={(el) => {
-                  el.target.select();
-                  el.target.setSelectionRange(0, 99999);
-                  navigator.clipboard.writeText(el.target.value);
-                }}
-              />
-            </div>
-          </PlayerBox>
-        </RoomInfoContainer>
+        <PlayerBox>
+          <legend>✏️ Room code:</legend>
+          <div>{roomId}</div>
+        </PlayerBox>
+        <PlayerBox>
+          <legend>⚡ Live link:</legend>
+          <div style={{ textAlign: "center" }}>
+            <Link
+              type={"text"}
+              value={url}
+              onclick={(el) => {
+                //el.target.select();
+                //el.target.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(el.target.value);
+              }}
+            />
+          </div>
+        </PlayerBox>
         <PlayerBox>
           <legend>Players in room:</legend>
           {players.map((player) => (

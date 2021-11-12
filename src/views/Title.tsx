@@ -4,7 +4,7 @@ import { styled } from "goober";
 import { Fieldset, Button, Container } from "./common";
 
 const TitleWrapper = styled("div")`
-  margin-top: 0.5em;
+  margin-top: 1em;
   width: min-content;
 `;
 
