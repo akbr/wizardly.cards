@@ -9,6 +9,7 @@ import {
   onDeal,
   onTurnEnd,
   onBidEnd,
+  onShowScores,
 } from "./reducerFns";
 
 export const getInitialState: WizardEngine["getInitialState"] = (
@@ -60,6 +61,7 @@ export const reducer: WizardEngine["reducer"] = (state, context, input) => {
   if (state.type === "bidEnd") return onBidEnd(state);
   if (state.type === "trickEnd") return onTrickEnd(state);
   if (state.type === "turnEnd") return onTurnEnd(state);
+  if (state.type === "showScores") return onShowScores(state);
 
   /**
    * Stop rollin'

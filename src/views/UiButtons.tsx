@@ -37,7 +37,7 @@ const ScoresButton = ({ open }: { open: () => void }) => {
 const Options = ({ exit }: { exit: () => void }) => {
   return (
     <div>
-      <div> OPTIONS! </div>
+      <div> Nothing here yet... wanna quit? </div>
       <Button onClick={exit}>Exit</Button>
     </div>
   );

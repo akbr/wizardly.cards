@@ -1,5 +1,6 @@
 import { ComponentChildren } from "preact";
 import { rotateArray } from "../lib/array";
+import { getScore } from "./derivations";
 
 const convert = (scores: number[][]) => {
   let rows: number[][][] = [];
@@ -18,8 +19,7 @@ const convert = (scores: number[][]) => {
 
     let columns = thisBids.map((bid, playerIndex) => {
       let actual = thisActuals[playerIndex];
-      let diff = Math.abs(bid - actual);
-      let score = diff === 0 ? bid * 10 + 20 : diff * -10;
+      let score = getScore(bid, actual);
       runningTotal[playerIndex] += score;
       return [runningTotal[playerIndex], bid, actual];
     });

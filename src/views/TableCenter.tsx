@@ -10,8 +10,6 @@ const LimitWidth = styled("div")`
   max-width: 135px;
 `;
 
-export const Dealing = ({ turn }: { turn: number }) => <h2>Round {turn}</h2>;
-
 export function TableCenter({ state, room, actions }: WizardGameFrame) {
   const active = room.seatIndex === state.activePlayer;
 
@@ -19,7 +17,9 @@ export function TableCenter({ state, room, actions }: WizardGameFrame) {
     <DeadCenterWrapper>
       <LimitWidth>
         {state.type === "deal" ? (
-          <Dealing turn={state.turn} />
+          <Appear>
+            <h2>Round {state.turn}</h2>
+          </Appear>
         ) : state.type === "bid" ? (
           <Appear>
             <BidInput
@@ -33,16 +33,18 @@ export function TableCenter({ state, room, actions }: WizardGameFrame) {
             />
           </Appear>
         ) : state.type === "bidEnd" ? null : state.type === "selectTrump" ? (
-          <TrumpInput
-            {...{
-              active,
-              selectTrump: actions.selectTrump,
-            }}
-          />
+          <Appear>
+            <TrumpInput
+              {...{
+                active,
+                selectTrump: actions.selectTrump,
+              }}
+            />
+          </Appear>
         ) : state.type === "turnEnd" ? (
-          <div>
-            <h3>Round Over</h3>
-          </div>
+          <Appear>
+            <h2>Round Over</h2>
+          </Appear>
         ) : null}
       </LimitWidth>
     </DeadCenterWrapper>

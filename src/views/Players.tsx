@@ -18,6 +18,7 @@ const PlayerPositioner = styled("div")(({ xRatio, yRatio }) => ({
 
 type PlayersProps = {
   showBids: boolean;
+  showScores: boolean;
   players: Player[];
   bids: (number | null)[];
   actuals: number[];
@@ -29,6 +30,7 @@ export const Players = ({
   bids,
   actuals,
   showBids,
+  showScores,
   trickLeader,
 }: PlayersProps) => {
   const positions = seatRatios[players.length - 1];
@@ -44,6 +46,7 @@ export const Players = ({
             bid: bids[idx],
             actual: actuals[idx],
             showBidBubble: showBids,
+            showScores,
             isLeader: idx === trickLeader,
             dir,
           }}

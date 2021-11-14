@@ -16,6 +16,7 @@ import type {
   BidAction,
   PlayAction,
   TurnEnd,
+  ShowScores,
 } from "./types";
 
 import { rotateIndex } from "../lib/array";
@@ -201,7 +202,12 @@ export const onTrickEnd = (s: TrickEnd): Play | TurnEnd => {
       };
 };
 
-export const onTurnEnd = (s: TurnEnd): GameEnd | Deal => {
+export const onTurnEnd = (s: TurnEnd): ShowScores => ({
+  ...s,
+  type: "showScores",
+});
+
+export const onShowScores = (s: ShowScores): GameEnd | Deal => {
   const gameIsOver = s.turn * s.numPlayers === 60;
   const scores = [...s.scores, s.bids, s.actuals] as Core["scores"];
 

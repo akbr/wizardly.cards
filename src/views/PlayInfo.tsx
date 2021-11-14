@@ -52,7 +52,7 @@ export const PlayInfo = ({
       {bidsComplete && (
         <Appear>
           {bidsDiff === 0 ? (
-            <div>Bids: ⚖️</div>
+            <div>Bids: Even</div>
           ) : bidsDiff > 1 ? (
             <div>Bids: +{bidsDiff}</div>
           ) : (

@@ -9,6 +9,7 @@ export type WizardShape = {
     | Play
     | TrickEnd
     | TurnEnd
+    | ShowScores
     | GameEnd;
   actions: SelectTrumpAction | BidAction | PlayAction;
   msgs: Err;
@@ -52,6 +53,7 @@ export type BidEnd = { type: "bidEnd" } & Core;
 export type Play = { type: "play" } & Core & Active;
 export type TrickEnd = { type: "trickEnd" } & Core & { trickWinner: number };
 export type TurnEnd = { type: "turnEnd" } & Core;
+export type ShowScores = { type: "showScores" } & Core;
 export type GameEnd = { type: "gameEnd" } & Core;
 
 export type Seed = {
