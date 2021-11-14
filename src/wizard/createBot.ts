@@ -1,6 +1,25 @@
-import { WizardEngine } from "./types";
-import { getPlayableCards } from "./logic";
+import { WizardEngine, WizardShape } from "./types";
+import { getPlayableCards, getSuit, getTuple } from "./logic";
 import { randomFromArray } from "../lib/random";
+
+const clamp = (num: number, min = 0, max = Infinity) =>
+  Math.min(Math.max(num, min), max);
+
+const computeBid = (
+  { hands, trumpSuit, numPlayers, turn }: WizardShape["states"],
+  playerIndex: number
+) => {
+  let hand = hands[playerIndex];
+
+  let suits = hand.map(getSuit);
+  let numWizards = suits.filter((s) => s === "w").length;
+  let trumpValue = hand
+    .map(getTuple)
+    .map(([value, suit]) => (suit === trumpSuit ? value : 0))
+    .reduce((x, y) => x + y, 0);
+  console.log(trumpValue);
+  return clamp(numWizards + (trumpValue % 8), 0, turn);
+};
 
 export const createBot: WizardEngine["createBot"] =
   ({ send }) =>
@@ -18,7 +37,7 @@ export const createBot: WizardEngine["createBot"] =
     }
 
     if (state.type === "bid") {
-      send({ type: "bid", data: 0 });
+      send({ type: "bid", data: computeBid(state, playerIndex) });
     }
 
     if (state.type === "play") {

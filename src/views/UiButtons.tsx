@@ -35,12 +35,7 @@ const ScoresButton = ({ open }: { open: () => void }) => {
 };
 
 const Options = ({ exit }: { exit: () => void }) => {
-  return (
-    <div>
-      <div> Nothing here yet... wanna quit? </div>
-      <Button onClick={exit}>Exit</Button>
-    </div>
-  );
+  return <Button onClick={exit}>Exit</Button>;
 };
 
 export const UiButtons = ({ state, actions, room }: WizardFrame) => {

@@ -54,7 +54,7 @@ function AppInner(frame: WizardFrame) {
   // Game modes
 
   const { waitFor } = actions;
-  if (state.type === "deal") waitFor(1500);
+  if (state.type === "deal") waitFor(2000);
   if (state.type === "bidEnd") waitFor(2000);
   if (state.type === "bid") waitFor(500);
   if (state.type === "turnEnd") waitFor(2000);
