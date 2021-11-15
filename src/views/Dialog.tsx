@@ -1,5 +1,6 @@
 import { styled } from "goober";
 import { ComponentChildren } from "preact";
+import { useState } from "preact/hooks";
 import { Button } from "./common";
 
 const Core = styled("div")`
@@ -20,15 +21,26 @@ const DialogWrapper = styled(Core)`
 `;
 
 type DialogHolderProps = {
-  visible: boolean;
   close: () => void;
   children?: ComponentChildren;
+  visible: boolean;
+};
+
+const WithPrevChild = ({ children }: { children: ComponentChildren }) => {
+  const [prevChild, setPrevChild] = useState<ComponentChildren>(null);
+
+  if (children === null) {
+    return <>{prevChild}</>;
+  } else {
+    setPrevChild(children);
+    return <>{children}</>;
+  }
 };
 
 export const DialogHolder = ({
-  visible,
   close,
   children,
+  visible,
 }: DialogHolderProps) => {
   return (
     <>
@@ -88,10 +100,20 @@ export const DialogInner = ({ children, close }: DialogInnerProps) => {
   );
 };
 
-export function DialogOf({ visible, close, children }: DialogHolderProps) {
+export function DialogOf({
+  close,
+  children,
+}: {
+  close: () => void;
+  children: ComponentChildren;
+}) {
+  const visible = children !== null;
+
   return (
-    <DialogHolder visible={visible} close={close}>
-      <DialogInner close={close}>{children}</DialogInner>
+    <DialogHolder close={close} visible={visible}>
+      <DialogInner close={close}>
+        <WithPrevChild>{children}</WithPrevChild>
+      </DialogInner>
     </DialogHolder>
   );
 }

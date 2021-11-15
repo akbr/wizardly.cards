@@ -44,7 +44,7 @@ const Footer = styled("div")`
 const TitleBlock = () => (
   <TitleWrapper>
     <Banner>Wizard</Banner>
-    <SubBanner>Trump your friends!</SubBanner>
+    <SubBanner>Bid your way to victory!</SubBanner>
   </TitleWrapper>
 );
 

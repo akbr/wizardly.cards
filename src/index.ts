@@ -1,11 +1,16 @@
 import "./styles.css";
 
+window.location.hash = "#";
+
 import { init } from "./init";
 let { store, server, actions } = init();
 
 /**
  * 
 window.location.hash = "#";
+
+import { init } from "./init";
+let { store, server, actions } = init();
 
 //@ts-ignore
 window.server = server;
@@ -22,6 +27,7 @@ actions.addBot();
 actions.addBot();
 actions.addBot();
  * 
+
 import W from "./WIP";
 W;
 

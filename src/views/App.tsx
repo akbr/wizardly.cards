@@ -1,4 +1,7 @@
 import type { WizardFrame } from "./types";
+import { ComponentChildren } from "preact";
+
+import { useCallback, useState } from "preact/hooks";
 
 import { Title } from "./Title";
 import { Lobby } from "./Lobby";
@@ -15,8 +18,24 @@ import { PlayInfo } from "./PlayInfo";
 import { ErrorReciever } from "./ErrorReceiver";
 import { rotateArray, rotateIndex } from "../lib/array";
 import { DeadCenterWrapper } from "./common";
+import { DialogOf } from "./Dialog";
+
+export type ViewFrame = WizardFrame & {
+  dialog: {
+    set: (children: ComponentChildren) => void;
+    close: () => void;
+  };
+};
 
 export function App(frame: WizardFrame) {
+  const [dialogChildren, setDialogChildren] = useState<ComponentChildren>(null);
+  const set = useCallback((children: ComponentChildren) => {
+    setDialogChildren(children);
+  }, []);
+  const close = useCallback(() => {
+    setDialogChildren(null);
+  }, []);
+
   const { err, connected } = frame;
 
   if (!connected)
@@ -26,15 +45,18 @@ export function App(frame: WizardFrame) {
       </DeadCenterWrapper>
     );
 
+  const viewFrame = { ...frame, dialog: { set, close } };
+
   return (
     <>
-      <AppInner {...frame} />
+      <DialogOf close={close}>{dialogChildren}</DialogOf>
+      <AppInner {...viewFrame} />
       <ErrorReciever err={err} />
     </>
   );
 }
 
-function AppInner(frame: WizardFrame) {
+function AppInner(frame: ViewFrame) {
   let { state, room, err, actions } = frame;
   if (room === null) {
     return <Title join={actions.join} />;
@@ -60,7 +82,6 @@ function AppInner(frame: WizardFrame) {
   }
 
   // Game modes
-
   const { waitFor } = actions;
   if (state.type === "deal") waitFor(2000);
   if (state.type === "bidEnd") waitFor(2000);
