@@ -9,7 +9,7 @@
     "workshop": "parcel serve src/workshop/index.html",
     "dev": "parcel",
     "build": "parcel build --target wizard && tsc ./src/wizard/initServer.ts --outDir dist",
-    "start": "node ./dist/wizard/initServer.ts"
+    "start": "node ./dist/wizard/initServer.js"
   },
   "dependencies": {
     "express": "^4.17.1",
