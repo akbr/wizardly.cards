@@ -1,8 +1,8 @@
-import { WizardShape } from "./types";
-import { AppHarness } from "../lib/appHarness/types";
+import { AppHarness } from "lib/appHarness/types";
+import { getHandHeight } from "lib/cardsViews/handUpdate.calc";
 
-import { engine } from ".";
-import { getHandHeight } from "../lib/cardsViews/handUpdate.calc";
+import { WizardShape } from "./engine/types";
+import { engine } from "./engine";
 
 export type Actions = ReturnType<typeof createActions>;
 

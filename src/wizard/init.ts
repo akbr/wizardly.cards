@@ -6,9 +6,9 @@ import { createServer } from "lib/server";
 import { createHarness } from "lib/appHarness";
 import { listenToHash } from "lib/appHarness/listenToHash";
 
-import { WizardShape } from "./wizard/types";
-import { engine } from "./wizard";
-import { createActions } from "./wizard/actions";
+import { WizardShape } from "./engine/types";
+import { engine } from "./engine";
+import { createActions } from "./actions";
 
 import { AppOuter } from "./views/AppOuter";
 

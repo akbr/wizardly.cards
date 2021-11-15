@@ -2,7 +2,7 @@ import { styled } from "goober";
 import { getBidsDiff, getBidsStatus } from "./derivations";
 import { Appear } from "lib/views/common";
 import { MiniCard } from "lib/cardsViews/MiniCard";
-import { getTuple } from "../wizard/logic";
+import { getTuple } from "../engine/logic";
 
 const InfoContainer = styled("div")`
   display: flex;

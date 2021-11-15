@@ -1,7 +1,7 @@
 import { ComponentChildren } from "preact";
 import { css } from "goober";
-import { Dimensions } from "../lib/cardsViews/types";
-import { useWindowSize } from "../lib/premix";
+import { Dimensions } from "lib/cardsViews/types";
+import { useWindowSize } from "lib/premix";
 
 export const tableWrapper = css`
   position: absolute;

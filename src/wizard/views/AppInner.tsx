@@ -8,7 +8,7 @@ import {
   CardsHand,
   CardsPlay,
   DragSurface,
-} from "../lib/cardsViews/preactInterfaces";
+} from "lib/cardsViews/preactInterfaces";
 import { TableWrapper } from "./TableWrapper";
 import { TableCenter } from "./TableCenter";
 import { Players } from "./Players";

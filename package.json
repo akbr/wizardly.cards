@@ -1,11 +1,14 @@
 {
   "name": "wizardly.cards",
-  "source": "./src/index.html",
+  "targets": {
+    "wizard": {
+      "source": "./src/wizard/index.html"
+    }
+  },
   "scripts": {
-    "dev": "parcel",
-    "build": "parcel build && tsc ./src/server.ts --outDir  dist",
-    "start": "node ./dist/server.js",
-    "whot": "tsc ./src/wizard/test.ts --outDir dist"
+    "dev": "parcel --target wizard",
+    "build": "parcel build --target wizard && tsc ./src/wizard/server.ts --outDir dist",
+    "start": "node ./dist/server.js"
   },
   "dependencies": {
     "express": "^4.17.1",

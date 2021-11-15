@@ -19,7 +19,7 @@ import type {
   ShowScores,
 } from "./types";
 
-import { rotateIndex } from "../lib/array";
+import { rotateIndex } from "../../lib/array";
 
 import {
   getDealtCards,

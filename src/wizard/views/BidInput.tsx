@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { styled } from "goober";
 import { Button, Throb } from "lib/views/common";
-import { isValidBid } from "../wizard/logic";
+import { isValidBid } from "../engine/logic";
 
 const Outer = styled("div")`
   display: flex;

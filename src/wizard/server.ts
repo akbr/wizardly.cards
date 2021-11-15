@@ -1,9 +1,9 @@
 import * as express from "express";
 import * as path from "path";
 
-import { mountRoomServer } from "./lib/socket/expressMount";
-import { createServer } from "./lib/server";
-import { engine } from "./wizard";
+import { mountRoomServer } from "../lib/socket/expressMount";
+import { createServer } from "../lib/server";
+import { engine } from "./engine";
 
 const PORT = process.env.PORT || 5000;
 const distPath = path.resolve("dist/");
