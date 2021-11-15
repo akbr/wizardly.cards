@@ -9,10 +9,17 @@ export function createStore<ET extends EngineTypesShape>(
 ): StoreInterface<ET> {
   const meter = createMeter<ET["states"]>();
   const store = createZStore<Frame<ET>>(() => ({
+    connected: false,
     state: null,
     room: null,
     err: null,
   }));
+
+  store.subscribe((frame) => {
+    if (frame.connected === false || frame.state === null) {
+      meter.empty();
+    }
+  });
 
   meter.subscribe((state) => {
     store.setState({ state, err: null });
@@ -38,6 +45,10 @@ export function createStore<ET extends EngineTypesShape>(
       let err = res[1];
       store.setState({ err });
     }
+  };
+
+  manager.onStatus = (connected) => {
+    store.setState({ connected });
   };
 
   return { store, meter };

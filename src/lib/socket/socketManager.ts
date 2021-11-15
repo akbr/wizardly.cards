@@ -28,8 +28,8 @@ export function createSocketManager<I, O>(arg: Server<I, O> | string) {
 
     currentSocket.onopen = () => {
       currentSocketStatus = true;
+      manager.onStatus(currentSocketStatus);
       sendBuffer.forEach((action) => manager.send(action));
-      manager.onStatus(true);
     };
 
     currentSocket.onclose = () => manager.onStatus(false);

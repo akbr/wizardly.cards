@@ -14,9 +14,17 @@ import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
 import { ErrorReciever } from "./ErrorReceiver";
 import { rotateArray, rotateIndex } from "../lib/array";
+import { DeadCenterWrapper } from "./common";
 
 export function App(frame: WizardFrame) {
-  const { err } = frame;
+  const { err, connected } = frame;
+
+  if (!connected)
+    return (
+      <DeadCenterWrapper>
+        <div style={{ fontSize: "50px" }}>🔌</div>
+      </DeadCenterWrapper>
+    );
 
   return (
     <>

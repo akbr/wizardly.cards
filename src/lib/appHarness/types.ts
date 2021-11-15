@@ -15,6 +15,7 @@ export type ManagerWith<ET extends EngineTypesShape> = SocketManager<
 >;
 
 export type Frame<ET extends EngineTypesShape> = {
+  connected: boolean;
   state: ET["states"] | null;
   room: RoomState["data"];
   err: ET["msgs"] | ServerTypes<ET>["msgs"] | null;

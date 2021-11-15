@@ -24,7 +24,7 @@ export const delay = (ms: number): Task => {
     finish: () => {
       clearTimeout(timeout);
       resolve(null);
-    }
+    },
   };
 };
 
@@ -32,7 +32,7 @@ export const all = (tasks: Task[]): Task => {
   let finished = Promise.all(tasks.map((t) => t.finished));
   return {
     finish: () => tasks.forEach((t) => t.finish()),
-    finished
+    finished,
   };
 };
 
@@ -73,7 +73,7 @@ export const seq = (fns: (() => WaitRequest | void)[]): Task => {
       if (pending) pending.finish();
       next();
     },
-    finished: promise
+    finished: promise,
   };
 };
 
@@ -81,6 +81,7 @@ export interface Meter<T> {
   push: (...states: T[]) => void;
   waitFor: (...req: WaitRequest[]) => void;
   subscribe: (emit: (t: T) => void) => () => void;
+  empty: () => void;
 }
 
 export const createMeter = <T>() => {
@@ -126,6 +127,9 @@ export const createMeter = <T>() => {
       return () => {
         listeners = listeners.filter((x) => x !== emit);
       };
-    }
+    },
+    empty: () => {
+      queue = [];
+    },
   };
 };
