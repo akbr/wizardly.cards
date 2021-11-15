@@ -1,6 +1,6 @@
 import { ComponentChildren } from "preact";
 import { rotateArray } from "lib/array";
-import { getScore } from "./derivations";
+import { getScore } from "../derivations";
 
 const convert = (scores: number[][]) => {
   let rows: number[][][] = [];
