@@ -11,10 +11,12 @@ import {
 
 setup(h);
 
+import { DeadCenterWrapper } from "lib/views/common";
+
 // -------------------------------
 
 const WIP = () => {
-  return <div></div>;
+  return <DeadCenterWrapper>Hello, world!@</DeadCenterWrapper>;
 };
 
 // -------------------------------
@@ -22,3 +24,5 @@ console.clear();
 
 let $app = document.getElementById("app")!;
 render(<WIP />, $app);
+
+export default "W";

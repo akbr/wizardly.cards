@@ -1,5 +1,3 @@
-import "./styles.css";
-
 window.location.hash = "#";
 
 import { init } from "./init";
