@@ -8,7 +8,7 @@
   "scripts": {
     "workshop": "parcel serve src/workshop/index.html",
     "dev": "parcel",
-    "build": "parcel build --target wizard && tsc ./src/wizard/server.ts --outDir dist",
+    "build": "parcel build --target wizard && tsc ./src/wizard/initServer.ts --outDir dist",
     "start": "node ./dist/wizard/initServer.ts"
   },
   "dependencies": {
