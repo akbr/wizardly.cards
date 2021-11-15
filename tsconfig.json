@@ -10,5 +10,6 @@
     "moduleResolution": "node",
     "rootDir": "./src"
   },
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", ".parcel-cache"]
 }
