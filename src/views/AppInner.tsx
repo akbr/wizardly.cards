@@ -1,7 +1,6 @@
-import type { WizardFrame } from "./types";
-import { ComponentChildren, FunctionalComponent, JSX } from "preact";
+import type { WizardPropsPlus } from "./AppOuter";
 
-import { useCallback, useState } from "preact/hooks";
+import { rotateArray, rotateIndex } from "lib/array";
 
 import { Title } from "./Title";
 import { Lobby } from "./Lobby";
@@ -15,65 +14,10 @@ import { TableCenter } from "./TableCenter";
 import { Players } from "./Players";
 import { UiButtons } from "./UiButtons";
 import { PlayInfo } from "./PlayInfo";
-import { ErrorReciever } from "./ErrorReceiver";
-import { rotateArray, rotateIndex } from "../lib/array";
-import { DeadCenterWrapper } from "./common";
-import { DialogOf } from "./Dialog";
+export function AppInner(props: WizardPropsPlus) {
+  const { frame, actions } = props;
+  const { state, room, err } = frame;
 
-export type ViewFrame = WizardFrame & {
-  dialogActions: {
-    set: (
-      children: ComponentChildren | FunctionalComponent<WizardFrame>
-    ) => void;
-    close: () => void;
-  };
-};
-
-function useDialog(frame: WizardFrame) {
-  const [Dialog, setDialog] = useState<
-    ComponentChildren | FunctionalComponent<WizardFrame>
-  >(null);
-  const set = useCallback(
-    (children: ComponentChildren | FunctionalComponent) =>
-      setDialog(typeof children === "function" ? () => children : children),
-    []
-  );
-  const close = useCallback(() => setDialog(null), []);
-  return {
-    Dialog: (
-      <DialogOf close={close}>
-        {typeof Dialog === "function" ? <Dialog {...frame} /> : Dialog}
-      </DialogOf>
-    ),
-    dialogActions: { set, close },
-  };
-}
-
-export function App(frame: WizardFrame) {
-  const { Dialog, dialogActions } = useDialog(frame);
-
-  const { err, connected } = frame;
-
-  if (!connected)
-    return (
-      <DeadCenterWrapper>
-        <div style={{ fontSize: "50px" }}>🔌</div>
-      </DeadCenterWrapper>
-    );
-
-  const viewFrame = { ...frame, dialogActions };
-
-  return (
-    <>
-      {Dialog}
-      <AppInner {...viewFrame} />
-      <ErrorReciever err={err} />
-    </>
-  );
-}
-
-function AppInner(frame: ViewFrame) {
-  let { state, room, err, actions } = frame;
   if (room === null) {
     return <Title join={actions.join} />;
   }
@@ -128,7 +72,7 @@ function AppInner(frame: ViewFrame) {
 
   return (
     <>
-      <UiButtons {...frame} />
+      <UiButtons {...props} />
       <DragSurface {...{ isInHand, isValidPlay, play }}>
         <TableWrapper {...{ getTableDimensions }}>
           <Players
@@ -141,7 +85,7 @@ function AppInner(frame: ViewFrame) {
               trickLeader: rotateIndex(numPlayers, trickLeader, -seatIndex),
             }}
           />
-          <TableCenter {...{ state, room, actions, err }} />
+          <TableCenter {...props} />
         </TableWrapper>
         <PlayInfo {...{ bids, turn, trumpCard, trumpSuit }} />
         <CardsPlay

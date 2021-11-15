@@ -1,7 +1,7 @@
 import { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 import { styled } from "goober";
-import { Fieldset, Button, Container } from "./common";
+import { Fieldset, Button, Container } from "lib/views/common";
 
 const TitleWrapper = styled("div")`
   margin-top: 1em;

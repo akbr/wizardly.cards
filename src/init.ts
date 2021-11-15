@@ -1,16 +1,16 @@
 import { setup } from "goober";
 import { h } from "preact";
-import { render } from "./lib/premix";
 
-import { createServer } from "./lib/server";
+import { render } from "lib/premix";
+import { createServer } from "lib/server";
+import { createHarness } from "lib/appHarness";
+import { listenToHash } from "lib/appHarness/listenToHash";
 
 import { WizardShape } from "./wizard/types";
 import { engine } from "./wizard";
-import { createHarness } from "./lib/appHarness";
-import { listenToHash } from "./lib/appHarness/listenToHash";
 import { createActions } from "./wizard/actions";
 
-import { App } from "./views/App";
+import { AppOuter } from "./views/AppOuter";
 
 export function init() {
   setup(h);
@@ -27,14 +27,8 @@ export function init() {
 
   const $appRoot = document.getElementById("app")!;
 
-  render(
-    h(App, { ...harness.store.getState(), actions }),
-    $appRoot,
-    meter.waitFor
-  );
-
-  store.subscribe((frame) => {
-    render(h(App, { ...frame, actions }), $appRoot, meter.waitFor);
+  store.subscribe((frame, prevFrame) => {
+    render(h(AppOuter, { frame, prevFrame, actions }), $appRoot, meter.waitFor);
   });
 
   manager.openSocket();

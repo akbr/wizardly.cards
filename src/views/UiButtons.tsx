@@ -1,10 +1,11 @@
+import type { WizardProps } from "./types";
+import type { WizardPropsPlus } from "./AppOuter";
+
 import { css } from "goober";
-import { a, topMargins } from "./commonCss";
-import { EmojiButton, Button } from "./common";
+import { a, topMargins } from "lib/views/commonCss";
+import { EmojiButton, Button } from "lib/views/common";
 
 import { ScoreTable } from "./ScoreTable";
-import { ViewFrame } from "./App";
-import { WizardFrame } from "./types";
 
 let flex = css`
   display: flex;
@@ -29,7 +30,9 @@ const TopButton = ({
   );
 };
 
-function Scorez({ state, room }: WizardFrame) {
+function Scorez({ frame }: WizardProps) {
+  const { state, room } = frame;
+
   if (room && state) {
     return (
       <div style={{ display: "grid", placeContent: "center" }}>
@@ -44,7 +47,7 @@ function Scorez({ state, room }: WizardFrame) {
   return null;
 }
 
-export const UiButtons = ({ state, actions, dialogActions }: ViewFrame) => {
+export const UiButtons = ({ actions, dialogActions }: WizardPropsPlus) => {
   const openOptions = () =>
     dialogActions.set(
       <Button

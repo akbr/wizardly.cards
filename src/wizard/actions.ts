@@ -4,6 +4,8 @@ import { AppHarness } from "../lib/appHarness/types";
 import { engine } from ".";
 import { getHandHeight } from "../lib/cardsViews/handUpdate.calc";
 
+export type Actions = ReturnType<typeof createActions>;
+
 export const createActions = ({
   store,
   manager,
@@ -12,6 +14,11 @@ export const createActions = ({
   const { send } = manager;
   const { getState, setState } = store;
   const { waitFor } = meter;
+
+  const getScreenDimensions = (inputWidth: number, inputHeight: number) => ({
+    w: inputWidth > 700 ? 700 : inputWidth,
+    h: inputHeight,
+  });
 
   return {
     join: (id?: string) => {
@@ -47,13 +54,11 @@ export const createActions = ({
         return true;
       }
     },
+    getScreenDimensions,
     getTableDimensions: (inputWidth: number, inputHeight: number) => {
       let { room, state } = getState();
       let hand = room && state ? state.hands[room.seatIndex] : [];
-      let screen = {
-        w: inputWidth > 700 ? 700 : inputWidth,
-        h: inputHeight,
-      };
+      let screen = getScreenDimensions(inputWidth, inputHeight);
       let space = getHandHeight(screen, hand.length || 1);
       let extraBuffer = 24;
 
@@ -69,5 +74,3 @@ export const createActions = ({
     waitFor,
   };
 };
-
-export type Actions = ReturnType<typeof createActions>;

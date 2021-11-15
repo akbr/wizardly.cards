@@ -1,6 +1,6 @@
 import { useRef } from "preact/hooks";
 import { styled } from "goober";
-import { Button, Throb } from "./common";
+import { Button, Throb } from "lib/views/common";
 
 const Outer = styled("div")`
   display: flex;

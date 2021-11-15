@@ -1,9 +1,8 @@
 import { styled } from "goober";
-import { a, topMargins } from "./commonCss";
 import { getBidsDiff, getBidsStatus } from "./derivations";
-import { MiniCard } from "../lib/cardsViews/MiniCard";
+import { Appear } from "lib/views/common";
+import { MiniCard } from "lib/cardsViews/MiniCard";
 import { getTuple } from "../wizard/logic";
-import { Appear } from "./common";
 
 const InfoContainer = styled("div")`
   display: flex;

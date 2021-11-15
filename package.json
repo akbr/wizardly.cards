@@ -19,5 +19,8 @@
     "@types/ws": "^8.2.0",
     "parcel": "^2.0.0",
     "typescript": "latest"
+  },
+  "alias": {
+    "lib": "./src/lib"
   }
 }

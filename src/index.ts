@@ -32,7 +32,6 @@ import W from "./WIP";
 W;
 
 /**
-More durable dialog
 Exit doesn't reboot socket
 Socket state/repair?
  */

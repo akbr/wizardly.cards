@@ -1,7 +1,7 @@
 import { styled } from "goober";
-import { WizardGameFrame } from "./types";
+import { WizardProps } from "./types";
 
-import { Appear, DeadCenterWrapper } from "./common";
+import { Appear, DeadCenterWrapper } from "lib/views/common";
 import { BidInput } from "./BidInput";
 import { TrumpInput } from "./TrumpInput";
 
@@ -10,7 +10,10 @@ const LimitWidth = styled("div")`
   max-width: 135px;
 `;
 
-export function TableCenter({ state, room, actions }: WizardGameFrame) {
+export function TableCenter({ frame, actions }: WizardProps) {
+  const { state, room } = frame;
+  if (!state || !room) return null;
+
   const active = room.seatIndex === state.activePlayer;
 
   return (

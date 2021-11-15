@@ -8,23 +8,13 @@ import {
   useCallback,
   useEffect,
 } from "preact/hooks";
-import { DialogOf } from "./views/Dialog2";
 
 setup(h);
 
 // -------------------------------
 
 const WIP = () => {
-  const [child, setChild] = useState<ComponentChildren>(null);
-  const close = () => setChild(null);
-
-  return (
-    <div>
-      <DialogOf close={close}>{child}</DialogOf>
-      <button onClick={() => setChild(<div>{Math.random()}</div>)}>Set</button>
-      <button onClick={() => setChild(null)}>Clear</button>
-    </div>
-  );
+  return <div></div>;
 };
 
 // -------------------------------
