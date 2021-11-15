@@ -12,6 +12,7 @@
     "start": "ts-node ./src/initServer.ts"
   },
   "dependencies": {
+    "ts-node": "^10.4.0",
     "express": "^4.17.1",
     "goober": "2.0.41",
     "lib": "file:src/@lib",
@@ -23,7 +24,6 @@
     "@types/express": "^4.17.13",
     "@types/ws": "^8.2.0",
     "parcel": "^2.0.0",
-    "ts-node": "^10.4.0",
     "typescript": "latest"
   }
 }
