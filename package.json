@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "parcel --target wizard",
     "build": "parcel build --target wizard && tsc ./src/wizard/server.ts --outDir dist",
-    "start": "node ./dist/server.js"
+    "start": "node ./dist/wizard/server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
