@@ -1,5 +1,5 @@
 import { styled } from "goober";
-import { getBidsDiff, getBidsStatus } from "./derivations";
+import { getBidsDiff, getBidsStatus } from "../derivations";
 import { Appear } from "lib/views/common";
 import { MiniCard } from "lib/cardsViews/MiniCard";
 import { getTuple } from "../engine/logic";
