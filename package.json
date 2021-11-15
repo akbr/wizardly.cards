@@ -9,10 +9,11 @@
     "workshop": "parcel serve src/workshop/index.html",
     "dev": "parcel",
     "build": "parcel build --target wizard && tsc ./src/initServer.ts --outDir dist",
-    "start": "node ./dist/initServer.js"
+    "start": "node ./dist/initServer.js",
+    "heroku-prebuild": "ln -s ./src/lib ./node_modules"
   },
   "dependencies": {
-    "lib": "file:src/@lib",
+    "lib": "file:src/lib",
     "express": "^4.17.1",
     "goober": "2.0.41",
     "preact": "10.5.14",
