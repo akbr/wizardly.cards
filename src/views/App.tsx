@@ -1,5 +1,5 @@
 import type { WizardFrame } from "./types";
-import { ComponentChildren } from "preact";
+import { ComponentChildren, FunctionalComponent, JSX } from "preact";
 
 import { useCallback, useState } from "preact/hooks";
 
@@ -21,20 +21,36 @@ import { DeadCenterWrapper } from "./common";
 import { DialogOf } from "./Dialog";
 
 export type ViewFrame = WizardFrame & {
-  dialog: {
-    set: (children: ComponentChildren) => void;
+  dialogActions: {
+    set: (
+      children: ComponentChildren | FunctionalComponent<WizardFrame>
+    ) => void;
     close: () => void;
   };
 };
 
+function useDialog(frame: WizardFrame) {
+  const [Dialog, setDialog] = useState<
+    ComponentChildren | FunctionalComponent<WizardFrame>
+  >(null);
+  const set = useCallback(
+    (children: ComponentChildren | FunctionalComponent) =>
+      setDialog(typeof children === "function" ? () => children : children),
+    []
+  );
+  const close = useCallback(() => setDialog(null), []);
+  return {
+    Dialog: (
+      <DialogOf close={close}>
+        {typeof Dialog === "function" ? <Dialog {...frame} /> : Dialog}
+      </DialogOf>
+    ),
+    dialogActions: { set, close },
+  };
+}
+
 export function App(frame: WizardFrame) {
-  const [dialogChildren, setDialogChildren] = useState<ComponentChildren>(null);
-  const set = useCallback((children: ComponentChildren) => {
-    setDialogChildren(children);
-  }, []);
-  const close = useCallback(() => {
-    setDialogChildren(null);
-  }, []);
+  const { Dialog, dialogActions } = useDialog(frame);
 
   const { err, connected } = frame;
 
@@ -45,11 +61,11 @@ export function App(frame: WizardFrame) {
       </DeadCenterWrapper>
     );
 
-  const viewFrame = { ...frame, dialog: { set, close } };
+  const viewFrame = { ...frame, dialogActions };
 
   return (
     <>
-      <DialogOf close={close}>{dialogChildren}</DialogOf>
+      {Dialog}
       <AppInner {...viewFrame} />
       <ErrorReciever err={err} />
     </>
