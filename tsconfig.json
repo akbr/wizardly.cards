@@ -10,5 +10,5 @@
     "moduleResolution": "node",
     "rootDir": "./src"
   },
-  "exclude": ["node_modules", "dist", ".parcel-cache"]
+  "exclude": ["dist", ".parcel-cache"]
 }

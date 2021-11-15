@@ -1,4 +1,4 @@
-import * as express from "express";
+import { default as express } from "express";
 import * as path from "path";
 
 import { mountRoomServer } from "../socket/expressMount";
