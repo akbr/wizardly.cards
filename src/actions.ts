@@ -60,11 +60,10 @@ export const createActions = ({
       let hand = room && state ? state.hands[room.seatIndex] : [];
       let screen = getScreenDimensions(inputWidth, inputHeight);
       let space = getHandHeight(screen, hand.length || 1);
-      let extraBuffer = 24;
 
       return {
         w: screen.w,
-        h: screen.h - space - extraBuffer,
+        h: screen.h - space,
       };
     },
     exit: () => {

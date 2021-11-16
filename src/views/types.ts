@@ -8,4 +8,4 @@ export type WizardProps = {
   actions: Actions;
 };
 
-export type Player = { avatar: string; active: boolean };
+export type Player = { avatar: string; name: string; active: boolean };

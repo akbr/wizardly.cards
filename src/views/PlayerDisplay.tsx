@@ -1,38 +1,16 @@
+import { WizardShape } from "../engine/types";
+
 import { styled, keyframes } from "goober";
 
-import { Appear } from "../lib/components/common";
 import { Badge } from "../lib/components/Badge";
-import { Tooltip } from "../lib/components/Tooltip";
 import { getScore } from "../derivations";
 
-const vecToDir = ({ x, y }: { x: number; y: number }) => {
-  if (x === 0 && y > 0) return "right";
-  if (x === 1 && y > 0) return "left";
-  if (y === 1 && x > 0) return "top";
-  return "bottom";
-};
+import { Twemoji } from "../lib/components/Twemoji";
 
-const InfoPosition = styled("div")`
-  position: absolute;
-  width: 100%;
-  top: 100%;
+const BidInfo = styled("div")`
   text-align: center;
   font-size: 14px;
 `;
-
-const EmojiNum = styled("div")`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid #000;
-  background-color: #1e90ff;
-  font-size: 11px;
-`;
-
-export const EmojiOne = () => <EmojiNum>1</EmojiNum>;
-
 export const scoreAppear = keyframes`
   0% {
     transform: scale(1);
@@ -72,65 +50,45 @@ const ScorePop = ({ score }: { score: number }) => {
 
 type PlayerProps = {
   avatar: string;
+  name: string;
+  type: WizardShape["states"]["type"];
   bid: number | null;
-  showBidBubble: boolean;
-  showScores: boolean;
   actual: number;
-  isLeader: boolean;
+  leader: boolean;
   active: boolean;
-  dir: { x: number; y: number };
+  dir: "top" | "bottom" | "left" | "right";
 };
 
 export const PlayerDisplay = ({
   avatar,
+  name,
+  type,
   bid,
-  showBidBubble,
-  showScores,
   actual,
-  isLeader,
+  leader,
   active,
   dir,
 }: PlayerProps) => {
+  const info =
+    type === "play" || type === "trickEnd" || type === "turnEnd" ? (
+      <BidInfo>{`${actual} / ${bid}`}</BidInfo>
+    ) : type === "showScores" ? (
+      <ScorePop score={getScore(bid!, actual)} />
+    ) : null;
+
+  const say =
+    (type === "bid" || type === "bidEnd") && bid !== null
+      ? { dir, content: `Bid: ${bid}` }
+      : null;
+
   return (
-    <>
-      <Badge avatar={avatar} />
-      {bid !== null ? (
-        <Appear>
-          {showBidBubble ? (
-            <Tooltip dir={vecToDir(dir)}>{`Bid: ${bid}`}</Tooltip>
-          ) : showScores ? (
-            <InfoPosition>
-              <ScorePop score={getScore(bid, actual)} />
-            </InfoPosition>
-          ) : (
-            <InfoPosition>{`${actual} / ${bid}`}</InfoPosition>
-          )}
-        </Appear>
-      ) : null}
-      {isLeader && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "2px",
-            left: "5px",
-            fontSize: "16px",
-          }}
-        >
-          <EmojiOne />
-        </div>
-      )}
-      {active && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "2px",
-            right: "5px",
-            fontSize: "16px",
-          }}
-        >
-          ⏳
-        </div>
-      )}
-    </>
+    <Badge
+      avatar={avatar}
+      name={name}
+      info={info}
+      tl={leader ? <Twemoji char={"1️⃣"} size={18} /> : null}
+      tr={active ? <Twemoji char={"⏳"} size={18} /> : null}
+      say={say}
+    />
   );
 };

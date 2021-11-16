@@ -26,6 +26,7 @@ export function AppInner(props: WizardPropsPlus) {
   const players = room.seats.map((avatar, idx) => ({
     avatar,
     active: idx === activePlayer,
+    name: "???",
   }));
 
   if (state === null) {
@@ -77,8 +78,7 @@ export function AppInner(props: WizardPropsPlus) {
         <TableWrapper {...{ getTableDimensions }}>
           <Players
             {...{
-              showBids: type === "bid" || type === "bidEnd",
-              showScores: type === "showScores",
+              type,
               players: rotateArray(players, -seatIndex),
               bids: rotateArray(bids, -seatIndex),
               actuals: rotateArray(actuals, -seatIndex),
