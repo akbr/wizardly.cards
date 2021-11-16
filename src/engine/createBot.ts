@@ -1,5 +1,5 @@
 import { WizardEngine, WizardShape } from "./types";
-import { randomFromArray } from "lib/random";
+import { randomFromArray } from "../lib/random";
 import { getPlayableCards, getSuit, getTuple } from "./logic";
 
 const clamp = (num: number, min = 0, max = Infinity) =>

@@ -2,8 +2,8 @@ import type { WizardProps } from "./types";
 import type { WizardPropsPlus } from "./AppOuter";
 
 import { css } from "goober";
-import { a, topMargins } from "lib/components/commonCss";
-import { EmojiButton, Button } from "lib/components/common";
+import { a, topMargins } from "../lib/components/commonCss";
+import { EmojiButton, Button } from "../lib/components/common";
 
 import { ScoreTable } from "./ScoreTable";
 

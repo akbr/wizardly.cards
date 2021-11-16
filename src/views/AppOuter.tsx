@@ -3,9 +3,9 @@ import { ComponentChildren, FunctionalComponent } from "preact";
 
 import { useCallback, useState } from "preact/hooks";
 
-import { ErrorReciever } from "lib/components/ErrorReceiver";
-import { DeadCenterWrapper } from "lib/components/common";
-import { DialogOf } from "lib/components/Dialog";
+import { ErrorReciever } from "../lib/components/ErrorReceiver";
+import { DeadCenterWrapper } from "../lib/components/common";
+import { DialogOf } from "../lib/components/Dialog";
 
 import { AppInner } from "./AppInner";
 

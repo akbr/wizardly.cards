@@ -1,5 +1,3 @@
-window.location.hash = "#";
-
 import { init } from "./init";
 let { store, server, actions } = init();
 

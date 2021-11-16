@@ -1,9 +1,9 @@
 import { Player } from "./types";
 
 import { styled, keyframes } from "goober";
-import { Fieldset, Container, Button, Throb } from "lib/components/common";
+import { Fieldset, Container, Button, Throb } from "../lib/components/common";
 import { PreGameWrapper } from "./Title";
-import { Badge } from "lib/components/Badge";
+import { Badge } from "../lib/components/Badge";
 
 const RoomInfoContainer = styled("div")`
   display: inline-flex;

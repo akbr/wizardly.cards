@@ -1,8 +1,8 @@
 import { styled, keyframes } from "goober";
 
-import { Appear } from "lib/components/common";
-import { Badge } from "lib/components/Badge";
-import { Tooltip } from "lib/components/Tooltip";
+import { Appear } from "../lib/components/common";
+import { Badge } from "../lib/components/Badge";
+import { Tooltip } from "../lib/components/Tooltip";
 import { getScore } from "../derivations";
 
 const vecToDir = ({ x, y }: { x: number; y: number }) => {

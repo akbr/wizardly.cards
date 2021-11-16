@@ -1,7 +1,7 @@
 import { Player } from "./types";
 import { styled } from "goober";
 
-import { seatRatios } from "lib/card-views/layout";
+import { seatRatios } from "../lib/card-views/layout";
 import { PlayerDisplay } from "./PlayerDisplay";
 
 const getTranslate = (r: number) => (r === 0 ? 0 : r === 1 ? -100 : -50);

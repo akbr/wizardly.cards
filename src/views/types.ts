@@ -1,6 +1,6 @@
 import { WizardShape } from "../engine/types";
 import { Actions } from "../actions";
-import { Frame } from "lib/socket-server-interface/types";
+import { Frame } from "../lib/socket-server-interface/types";
 
 export type WizardProps = {
   frame: Frame<WizardShape>;

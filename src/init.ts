@@ -1,10 +1,10 @@
 import { setup } from "goober";
 import { h } from "preact";
 
-import { render } from "lib/premix";
-import { createServer } from "lib/socket-server";
-import { createHarness } from "lib/socket-server-interface";
-import { listenToHash } from "lib/socket-server-interface/listenToHash";
+import { render } from "./lib/premix";
+import { createServer } from "./lib/socket-server";
+import { createHarness } from "./lib/socket-server-interface";
+import { listenToHash } from "./lib/socket-server-interface/listenToHash";
 
 import { WizardShape } from "./engine/types";
 import { engine } from "./engine";

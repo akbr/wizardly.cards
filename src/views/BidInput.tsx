@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { styled } from "goober";
-import { Button, Throb } from "lib/components/common";
+import { Button, Throb } from "../lib/components/common";
 import { isValidBid } from "../engine/logic";
 
 const Outer = styled("div")`

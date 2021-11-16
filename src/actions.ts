@@ -1,5 +1,5 @@
-import { AppHarness } from "lib/socket-server-interface/types";
-import { getHandHeight } from "lib/card-views/handUpdate.calc";
+import { AppHarness } from "./lib/socket-server-interface/types";
+import { getHandHeight } from "./lib/card-views/handUpdate.calc";
 
 import { WizardShape } from "./engine/types";
 import { engine } from "./engine";

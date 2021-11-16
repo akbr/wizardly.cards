@@ -1,6 +1,6 @@
 import type { WizardPropsPlus } from "./AppOuter";
 
-import { rotateArray, rotateIndex } from "lib/array";
+import { rotateArray, rotateIndex } from "../lib/array";
 
 import { Title } from "./Title";
 import { Lobby } from "./Lobby";
@@ -8,7 +8,7 @@ import {
   CardsHand,
   CardsPlay,
   DragSurface,
-} from "lib/card-views/preactInterfaces";
+} from "../lib/card-views/preactInterfaces";
 import { TableWrapper } from "./TableWrapper";
 import { TableCenter } from "./TableCenter";
 import { Players } from "./Players";

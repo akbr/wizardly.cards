@@ -1,4 +1,4 @@
-import { indexOfMax, shuffle } from "lib/array";
+import { indexOfMax, shuffle } from "../lib/array";
 
 const SEPERATOR = "|";
 const split = (cardId: string) => cardId.split(SEPERATOR);

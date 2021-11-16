@@ -1,7 +1,7 @@
 import { styled } from "goober";
 import { WizardProps } from "./types";
 
-import { Appear, DeadCenterWrapper } from "lib/components/common";
+import { Appear, DeadCenterWrapper } from "../lib/components/common";
 import { BidInput } from "./BidInput";
 import { TrumpInput } from "./TrumpInput";
 

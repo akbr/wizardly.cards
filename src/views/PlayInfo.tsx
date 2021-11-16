@@ -1,7 +1,7 @@
 import { styled } from "goober";
 import { getBidsDiff, getBidsStatus } from "../derivations";
-import { Appear } from "lib/components/common";
-import { MiniCard } from "lib/card-views/MiniCard";
+import { Appear } from "../lib/components/common";
+import { MiniCard } from "../lib/card-views/MiniCard";
 import { getTuple } from "../engine/logic";
 
 const InfoContainer = styled("div")`
