@@ -11,7 +11,7 @@ import {
 
 setup(h);
 
-import { DeadCenterWrapper } from "lib/components/common";
+import { DeadCenterWrapper } from "../lib/components/common";
 
 // -------------------------------
 
