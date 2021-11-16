@@ -1,11 +1,13 @@
 {
-  "name": "wizardly.cards",
+  "name": "wizard.tidy.games",
   "source": "./src/index.html",
   "scripts": {
-    "workshop": "parcel serve src/workshop/index.html",
     "dev": "parcel",
-    "build": "parcel build && tsc ./src/initServer.ts --outDir dist",
-    "start": "node ./dist/initServer.js"
+    "workshop": "parcel serve src/workshop/index.html",
+    "build-client": "parcel build",
+    "build-server": "tsc ./src/index-server.ts --outDir dist",
+    "build": "npm run build-client && npm run build-server",
+    "start": "node ./dist/index-server.js"
   },
   "dependencies": {
     "goober": "2.0.41",

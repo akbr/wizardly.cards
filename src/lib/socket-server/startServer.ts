@@ -3,6 +3,7 @@ import * as path from "path";
 
 import { mountRoomServer } from "../socket/expressMount";
 import { createServer } from "./";
+import { Engine, EngineTypesShape } from "./types";
 
 const PORT = process.env.PORT || 5000;
 const distPath = path.resolve("dist/");
@@ -20,7 +21,7 @@ function requireHTTPS(req, res, next) {
   next();
 }
 
-export function startServer(engine: any) {
+export function startServer<T extends EngineTypesShape>(engine: Engine<T>) {
   mountRoomServer(
     //@ts-ignore
     express()

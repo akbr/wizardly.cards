@@ -1,4 +1,4 @@
-import { AppHarness } from "./lib/socket-server-interface/types";
+import { AppInterface } from "./lib/socket-server-interface/types";
 import { getHandHeight } from "./lib/card-views/handUpdate.calc";
 
 import { WizardShape } from "./engine/types";
@@ -10,7 +10,7 @@ export const createActions = ({
   store,
   manager,
   meter,
-}: AppHarness<WizardShape>) => {
+}: AppInterface<WizardShape>) => {
   const { send } = manager;
   const { getState, setState } = store;
   const { waitFor } = meter;

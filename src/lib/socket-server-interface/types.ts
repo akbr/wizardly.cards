@@ -34,7 +34,7 @@ export interface StoreInterface<ET extends EngineTypesShape> {
   meter: Meter<ET["states"]>;
 }
 
-export type AppHarness<ET extends EngineTypesShape> = {
+export type AppInterface<ET extends EngineTypesShape> = {
   manager: ManagerWith<ET>;
   store: Store<ET>;
   meter: Meter<ET["states"]>;

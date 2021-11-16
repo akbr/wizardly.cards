@@ -1,11 +1,11 @@
 import type { EngineTypesShape } from "../socket-server/types";
-import type { AppHarness } from "./types";
+import type { AppInterface } from "./types";
 import { getHash, replaceHash } from "./hash";
 
 export function listenToHash<ET extends EngineTypesShape>({
   manager,
   store,
-}: AppHarness<ET>) {
+}: AppInterface<ET>) {
   function reactToHash() {
     let { id, playerIndex } = getHash();
     let { room } = store.getState();

@@ -3,7 +3,7 @@ import { h } from "preact";
 
 import { render } from "./lib/premix";
 import { createServer } from "./lib/socket-server";
-import { createHarness } from "./lib/socket-server-interface";
+import { createInterface } from "./lib/socket-server-interface";
 import { listenToHash } from "./lib/socket-server-interface/listenToHash";
 
 import { WizardShape } from "./engine/types";
@@ -20,10 +20,10 @@ export function init() {
     ? createServer(engine)
     : location.origin.replace(/^http/, "ws");
 
-  const harness = createHarness<WizardShape>(server);
-  const actions = createActions(harness);
+  const appInterface = createInterface<WizardShape>(server);
+  const actions = createActions(appInterface);
 
-  let { store, meter, manager } = harness;
+  let { store, meter, manager } = appInterface;
 
   const $appRoot = document.getElementById("app")!;
 
@@ -33,7 +33,7 @@ export function init() {
 
   manager.openSocket();
 
-  listenToHash(harness);
+  listenToHash(appInterface);
 
-  return { ...harness, actions, server };
+  return { ...appInterface, actions, server };
 }
