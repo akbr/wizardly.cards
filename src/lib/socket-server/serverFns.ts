@@ -34,16 +34,19 @@ export const getRoomForSocket = <ET extends EngineTypesShape>(
   return null;
 };
 
+const avatars = ["🦊", "🐷", "🐔", "🐻", "🐭", "🦁"];
+const botAvatar = "🤖";
 export const broadcastRoomStatus = <ET extends EngineTypesShape>(
   { botSockets }: ServerContext<ET>,
   { id, seats, spectators, state }: Room<ET>
 ) => {
-  const avatars = ["🐵", "🐸", "🦊", "🐷", "🐭", "🐼"];
-  const botAvatar = "🤖";
-
-  const modSeats = seats.map((socket, idx) =>
-    socket && botSockets.has(socket) ? botAvatar : avatars[idx]
-  );
+  const modSeats = seats.map((socket, idx) => {
+    const avatar = socket && botSockets.has(socket) ? botAvatar : avatars[idx];
+    return {
+      avatar,
+      name: `P${idx + 1}`,
+    };
+  });
 
   const numSpectators = spectators.length;
   const started = state ? true : false;

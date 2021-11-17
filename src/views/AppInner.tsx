@@ -23,10 +23,10 @@ export function AppInner(props: WizardPropsPlus) {
   }
 
   const activePlayer = state ? state.activePlayer : null;
-  const players = room.seats.map((avatar, idx) => ({
+  const players = room.seats.map(({ avatar, name }, idx) => ({
     avatar,
+    name,
     active: idx === activePlayer,
-    name: "???",
   }));
 
   if (state === null) {
@@ -35,6 +35,7 @@ export function AppInner(props: WizardPropsPlus) {
         players={players}
         isAdmin={room.seatIndex === 0}
         roomId={room.id}
+        playerIndex={room.seatIndex}
         start={actions.start}
         exit={actions.exit}
         addBot={actions.addBot}

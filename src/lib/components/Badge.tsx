@@ -2,7 +2,6 @@ import { styled } from "goober";
 import { ComponentChildren } from "preact";
 import { Appear } from "./common";
 import { Twemoji } from "./Twemoji";
-
 import { Tooltip } from "./Tooltip";
 
 const BadgeWrapper = styled("div")`
@@ -10,15 +9,12 @@ const BadgeWrapper = styled("div")`
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const AvatarWrapper = styled("div")`
-  font-size: 30px;
+  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.6));
 `;
 
 const Name = styled("div")`
-  margin-top: -4px;
-  font-size: 12px;
+  transform: translateY(-4px);
+  font-size: 14px;
   color: white;
   background: mediumblue;
   clip-path: polygon(100% 0, 90% 50%, 100% 100%, 0% 100%, 10% 50%, 0% 0%);
@@ -27,7 +23,6 @@ const Name = styled("div")`
 
 const Corner = styled("div")`
   position: absolute;
-  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.6));
   top: 0;
 `;
 
@@ -44,7 +39,7 @@ const TR = styled(Corner)`
 const Info = styled("div")`
   position: absolute;
   white-space: nowrap;
-  top: calc(100% + 2px);
+  top: calc(100%);
   left: 50%;
   transform: translateX(-50%);
 `;
@@ -85,9 +80,7 @@ export const Badge = ({
         </Appear>
       )}
       {info && <Info>{info}</Info>}
-      <AvatarWrapper>
-        <Twemoji char={avatar} size={size} />
-      </AvatarWrapper>
+      <Twemoji char={avatar} size={size} />
       {name && <Name>{name}</Name>}
     </BadgeWrapper>
   );

@@ -9,9 +9,11 @@ const InfoContainer = styled("div")`
   flex-direction: column;
   gap: 5px;
   position: absolute;
-  margin: 6px;
+  padding: 10px;
   right: 0;
   text-align: right;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 0 6px;
 `;
 
 const getDisplayCard = (trumpCard: string | null, trumpSuit: string | null) => {

@@ -50,11 +50,17 @@ export interface Engine<T extends EngineTypesShape> {
 // ---------------------
 // SERVER STATES/ACTIONS
 // ---------------------
+
+export type PlayerInfo = {
+  name: string;
+  avatar: string;
+};
+
 export type RoomState = {
   type: "room";
   data: {
     id: string;
-    seats: string[];
+    seats: PlayerInfo[];
     spectators: number;
     seatIndex: number;
     started: boolean;

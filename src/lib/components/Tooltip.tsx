@@ -10,7 +10,7 @@ const Outer = styled("div")`
   white-space: nowrap;
 `;
 
-const gap = 10;
+const gap = 12;
 const positions: { [key: string]: any } = {
   left: {
     bottom: "50%",
