@@ -38,7 +38,7 @@ function Scorez({ frame }: WizardProps) {
       <div style={{ display: "grid", placeContent: "center" }}>
         <ScoreTable
           scores={state.scores}
-          avatars={room.seats}
+          avatars={room.seats.map(({ avatar }) => avatar)}
           playerIndex={room.seatIndex}
         />
       </div>
