@@ -6,7 +6,7 @@
     "workshop": "parcel serve src/workshop/index.html",
     "build-client": "parcel build",
     "build-server": "tsc ./src/index-server.ts --outDir dist",
-    "build": "parcel build && tsc ./src/index-server.ts --outDir dist",
+    "build": "npm run build-client && npm run build-server",
     "start": "node ./dist/index-server.js"
   },
   "dependencies": {
