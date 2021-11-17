@@ -1,9 +1,6 @@
 {
   "name": "wizardly.cards",
   "source": "./src/index.html",
-  "engines": {
-    "node": "16.13.0"
-  },
   "scripts": {
     "dev": "parcel",
     "workshop": "parcel serve src/workshop/index.html",
