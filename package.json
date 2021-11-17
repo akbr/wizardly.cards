@@ -1,12 +1,15 @@
 {
   "name": "wizardly.cards",
   "source": "./src/index.html",
+  "engines": {
+    "node": "16.13.0"
+  },
   "scripts": {
     "dev": "parcel",
     "workshop": "parcel serve src/workshop/index.html",
     "build-client": "parcel build",
     "build-server": "tsc ./src/index-server.ts --outDir dist",
-    "heroku-postbuild": "npm run build-client && npm run build-server",
+    "build": "npm run build-client && npm run build-server",
     "start": "node ./dist/index-server.js"
   },
   "dependencies": {
