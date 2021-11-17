@@ -1,5 +1,5 @@
 {
-  "name": "wizard.tidy.games",
+  "name": "wizardly.cards",
   "source": "./src/index.html",
   "scripts": {
     "dev": "parcel",
