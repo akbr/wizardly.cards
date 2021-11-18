@@ -68,7 +68,11 @@ export const Badge = ({
 }: BadgeProps) => {
   return (
     <BadgeWrapper>
-      {say && <Tooltip dir={say.dir}>{say.content}</Tooltip>}
+      {say && (
+        <Appear>
+          <Tooltip dir={say.dir}>{say.content}</Tooltip>
+        </Appear>
+      )}
       {tl && (
         <Appear>
           <TL>{tl}</TL>

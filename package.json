@@ -21,7 +21,7 @@
     "@types/express": "^4.17.13",
     "@types/twemoji": "^12.1.2",
     "@types/ws": "^8.2.0",
-    "parcel": "^2.0.0",
+    "parcel": "2.0.1",
     "typescript": "latest"
   }
 }

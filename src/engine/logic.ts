@@ -83,7 +83,7 @@ export const getDealtCards = (numPlayers: number, numCards: number) => {
 };
 
 const getLeadSuit = (trick: string[]) =>
-  trick.map(getSuit).find((suit) => suit !== "j" && suit !== "w");
+  trick.map(getSuit).find((suit) => suit !== "j");
 
 const winnerWithinSuit = (trick: string[], suit: string) => {
   const adjustedValues = trick.map((card) =>
@@ -109,7 +109,7 @@ export const getWinningIndex = (
 
   // Highest of led suit wins
   const leadSuit = getLeadSuit(trick);
-  if (leadSuit) return winnerWithinSuit(trick, leadSuit);
+  if (leadSuit && leadSuit !== "w") return winnerWithinSuit(trick, leadSuit);
 
   // Lead card wins (must be all jesters!)
   return 0;
@@ -119,7 +119,7 @@ export const getPlayableCards = (hand: string[], trick: string[]) => {
   if (trick.length === 0) return hand;
 
   const leadSuit = getLeadSuit(trick);
-  if (!leadSuit) return hand;
+  if (!leadSuit || leadSuit === "w") return hand;
 
   const handSuits = hand.map(getSuit);
   if (!handSuits.includes(leadSuit)) return hand;
