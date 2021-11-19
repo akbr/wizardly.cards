@@ -54,7 +54,7 @@ export const PlayInfo = ({
         <Appear>
           {bidsDiff === 0 ? (
             <div>Bids: Even</div>
-          ) : bidsDiff > 1 ? (
+          ) : bidsDiff > 0 ? (
             <div>Bids: +{bidsDiff}</div>
           ) : (
             <div>Bids: -{Math.abs(bidsDiff)}</div>
